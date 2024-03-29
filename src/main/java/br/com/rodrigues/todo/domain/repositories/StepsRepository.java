@@ -1,9 +1,9 @@
 package br.com.rodrigues.todo.domain.repositories;
 
-import br.com.rodrigues.todo.domain.entities.User;
+import br.com.rodrigues.todo.domain.entities.Steps;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends MongoRepository<User, String> {
+public interface StepsRepository extends MongoRepository<Steps, String> {
 }

@@ -3,13 +3,17 @@ package br.com.rodrigues.todo.domain.services.map;
 import br.com.rodrigues.todo.api.dto.todo.TodoRequestDTO;
 import br.com.rodrigues.todo.api.dto.todo.TodoResponseDTO;
 import br.com.rodrigues.todo.domain.entities.Todo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
+@RequiredArgsConstructor
 
 @Component
 public class TodoMapper {
+
+    private final StepsMapper stepsMapper;
 
     public TodoResponseDTO toDto (Todo entity){
         return new TodoResponseDTO(
@@ -17,6 +21,7 @@ public class TodoMapper {
                 entity.getName(),
                 entity.getPriorities(),
                 entity.getDone(),
+                stepsMapper.toListDto(entity.getSteps()),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );
@@ -30,8 +35,8 @@ public class TodoMapper {
     }
 
     public List<TodoResponseDTO> toList(List<Todo> todoList) {
-        return todoList.stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+        return todoList.stream().map(this::toDto).toList();
     }
+
+    public Todo update ()
 }
