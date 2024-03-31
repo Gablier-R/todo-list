@@ -2,36 +2,46 @@ package br.com.rodrigues.todo.domain.services.map;
 
 import br.com.rodrigues.todo.api.dto.steps.StepsRequestDTO;
 import br.com.rodrigues.todo.api.dto.steps.StepsResponseDTO;
-import br.com.rodrigues.todo.domain.entities.Steps;
+import br.com.rodrigues.todo.domain.entities.Step;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
 public class StepsMapper {
 
-    public Steps toEntity (StepsRequestDTO dto){
-        return new Steps(
+    public Step toEntity (StepsRequestDTO dto){
+        return new Step(
                 dto.description()
         );
     }
 
-    public StepsResponseDTO toDto (Steps entity){
+    public StepsResponseDTO toDto (Step entity){
         return new StepsResponseDTO(
                 entity.getId(),
                 entity.getDescription(),
-                entity.getDone(),
+                entity.getIsDone(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );
     }
 
-    public List<Steps> toListEntity (List<StepsRequestDTO> steps){
+    public List<Step> toListEntity (List<StepsRequestDTO> steps){
         return steps.stream().map(this::toEntity).toList();
     }
 
-    public List<StepsResponseDTO> toListDto (List<Steps>  steps){
+    public List<StepsResponseDTO> toListDto (List<Step>  steps){
         return steps.stream().map(this::toDto).toList();
+    }
+
+    public Step updateEntity (Step entity, StepsRequestDTO dto){
+
+        entity.setDescription( dto.description() == null ? entity.getDescription() : dto.description());
+        entity.setIsDone( dto.done() == null ? entity.getIsDone() : dto.done());
+        entity.setUpdatedAt(LocalDateTime.now());
+
+        return entity;
     }
 
 }

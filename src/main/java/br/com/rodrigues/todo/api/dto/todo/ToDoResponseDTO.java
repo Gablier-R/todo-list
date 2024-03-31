@@ -6,7 +6,7 @@ import br.com.rodrigues.todo.domain.entities.Priorities;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record TodoResponseDTO(
+public record ToDoResponseDTO(
         String id,
         String name,
         Priorities priorities,

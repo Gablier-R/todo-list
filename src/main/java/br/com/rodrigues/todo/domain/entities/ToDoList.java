@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -17,18 +18,18 @@ import java.util.List;
 @NoArgsConstructor
 
 @Document(collection = "list")
-public class Todo {
+public class ToDoList {
 
     @Id
-    private String id;
+    private String id = UUID.randomUUID().toString();
     private String name;
     private Priorities priorities;
-    private Boolean done = false;
-    private List<Steps> steps = new ArrayList<>();
+    private Boolean isDone = false;
+    private List<Step> steps = new ArrayList<>();
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
 
-    public Todo(String name, Priorities priorities) {
+    public ToDoList(String name, Priorities priorities) {
         this.name = name;
         this.priorities = (priorities == null) ? Priorities.MEDIUM : priorities;
     }

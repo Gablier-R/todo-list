@@ -2,9 +2,7 @@ package br.com.rodrigues.todo.domain.services;
 
 import br.com.rodrigues.todo.api.dto.steps.StepsRequestDTO;
 import br.com.rodrigues.todo.api.dto.steps.StepsResponseDTO;
-import br.com.rodrigues.todo.domain.entities.Steps;
-import br.com.rodrigues.todo.domain.entities.Todo;
-import br.com.rodrigues.todo.domain.repositories.StepsRepository;
+import br.com.rodrigues.todo.domain.entities.Step;
 import br.com.rodrigues.todo.domain.services.map.StepsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,50 +16,71 @@ import java.util.List;
 public class StepsService {
 
     private final TodoService todoService;
-    private final StepsRepository stepsRepository;
     private final StepsMapper stepsMapper;
 
 
     public List<StepsResponseDTO> saveStep (String id, List<StepsRequestDTO>  dto){
 
         var todo = todoService.findById(id);
-        List<Steps> steps = todo.getSteps();
 
         var entity = stepsMapper.toListEntity(dto);
-        List<Steps> response = new ArrayList<>();
 
-        for(Steps step : entity){
-            var savedStep =  stepsRepository.save(step);
-            response.add(savedStep);
-        }
+        List<Step> stepList = new ArrayList<>(entity);
 
-        return stepsMapper.toListDto(response);
+        todo.getSteps().addAll(stepList);
+
+        todoService.save(todo);
+
+        return stepsMapper.toListDto(todo.getSteps());
     }
 
+    public List<StepsResponseDTO> listStepsByTodo (String todoId) {
+        var todo = todoService.findById(todoId);
 
+        var steps = todo.getSteps();
 
-    public List<StepsResponseDTO> save(String id, List<StepsRequestDTO> dtoList) {
-        // Encontrar o Todo pelo ID
-        Todo todo = todoService.findById(id);
+        return stepsMapper.toListDto(steps);
+    }
 
+    public StepsResponseDTO findStepByTodoIdAndStepId(String todoId, String stepId){
+        var todo = todoService.findById(todoId);
 
-        // Mapear os Steps do DTO para entidades Steps
-        List<Steps> stepsToAdd = stepsMapper.toListEntity(dtoList);
+        var steps = todo.getSteps();
 
-        // Adicionar os Steps ao Todo
-        List<Steps> savedSteps = new ArrayList<>();
-        for (Steps step : stepsToAdd) {
-            //todo.addStep(step);
-            todo.getSteps().add(step);// Adiciona o novo Step ao Todo
-            Steps savedStep = stepsRepository.save(step); // Salva o Step no banco de dados
-            savedSteps.add(savedStep); // Adiciona o Step salvo à lista de Steps salvos
+        for (Step step: steps){
+            if (step.getId().equals(stepId)){
+                return stepsMapper.toDto(step);
+            }
+        }
+        return null;
+    }
+
+    public StepsResponseDTO updateStep (String todoId, String stepId, StepsRequestDTO stepsResponseDTO){
+        var todo = todoService.findById(todoId);
+
+        Step response = null;
+
+        for (Step step: todo.getSteps()){
+            if (step.getId().equals(stepId)){
+                stepsMapper.updateEntity(step, stepsResponseDTO);
+                todoService.save(todo);
+
+                response = step;
+            }
         }
 
-        // Atualizar o Todo no banco de dados para refletir as alterações
-        //todoService.updateTodo(todo);
+        todoService.updateStatusTodoList(todo);
+        return stepsMapper.toDto(response);
+    }
 
-        // Mapear a lista de Steps salvos para StepsResponseDTO e retorná-la
-        return stepsMapper.toListDto(savedSteps);
+    public void deleteSteps (String todoId, List<String> listIdSteps){
+        var todo = todoService.findById(todoId);
+
+        for(Step step: todo.getSteps()){
+            if (step.getId().equals(listIdSteps)){
+                todoService.deleteTodoById(String.valueOf(step));
+            }
+        }
     }
 
 }

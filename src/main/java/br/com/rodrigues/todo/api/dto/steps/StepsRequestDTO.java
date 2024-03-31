@@ -1,6 +1,7 @@
 package br.com.rodrigues.todo.api.dto.steps;
 
 public record StepsRequestDTO(
-        String description
+        String description,
+        Boolean done
 )
 {}

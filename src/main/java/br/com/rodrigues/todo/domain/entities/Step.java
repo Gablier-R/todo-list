@@ -5,26 +5,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 
-@Document
-public class Steps {
+public class Step {
 
     @Id
-    private String id;
+    private String id = UUID.randomUUID().toString();
     private String description;
-    private Boolean done = false;
+    private Boolean isDone = false;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
 
-    public Steps(String description) {
+    public Step(String description) {
         this.description = description;
     }
 }
