@@ -6,6 +6,7 @@ import br.com.rodrigues.todo.domain.entities.Step;
 import br.com.rodrigues.todo.domain.entities.ToDoList;
 import br.com.rodrigues.todo.domain.repositories.ToDoRepository;
 import br.com.rodrigues.todo.domain.services.map.ToDoMapper;
+import br.com.rodrigues.todo.infrastructure.exceptions.custom.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class TodoService {
     }
 
     public ToDoResponseDTO updateToDo(String id, ToDoRequestDTO dto){
-        var entity = findById(id);
+        var entity = validateToDo(id);
         ToDoList toDoListForSave = todoMapper.update(entity, dto);
 
         updateStatusSteps(toDoListForSave);
@@ -38,7 +39,7 @@ public class TodoService {
     }
 
     public ToDoResponseDTO detailsToDo(String id) {
-        var entity = findById(id);
+        var entity = validateToDo(id);
         return todoMapper.toDto(entity);
     }
 
@@ -69,10 +70,8 @@ public class TodoService {
         }
     }
 
-
-
-    public ToDoList findById(String id) {
-        return todoRepository.findById(id).orElseThrow(() -> new RuntimeException("User does not exists"));
+    public ToDoList validateToDo(String id) {
+        return todoRepository.findById(id).orElseThrow(() -> new NotFoundException("ToDo does not exists"));
     }
 
     public List<ToDoResponseDTO> findAllToDo(){
