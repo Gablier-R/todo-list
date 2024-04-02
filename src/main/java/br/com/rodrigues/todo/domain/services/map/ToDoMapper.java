@@ -20,6 +20,7 @@ public class ToDoMapper {
                 entity.getId(),
                 entity.getName(),
                 entity.getPriorities(),
+                entity.getLimitDate(),
                 entity.getIsDone(),
                 stepsMapper.toListDto(entity.getSteps()),
                 entity.getCreatedAt(),
@@ -27,16 +28,18 @@ public class ToDoMapper {
         );
     }
 
-    public ToDoList toEntity (ToDoRequestDTO dto){
+    public ToDoList toEntity(ToDoRequestDTO dto){
         return new ToDoList(
                 dto.name(),
-                dto.priorities()
+                dto.priorities(),
+                dto.limitDate()
         );
     }
 
-    public List<ToDoResponseDTO> toList(List<ToDoList> toDoList) {
+    public List<ToDoResponseDTO> toListDto(List<ToDoList> toDoList) {
         return toDoList.stream().map(this::toDto).toList();
     }
+
 
     public ToDoList update (ToDoList entity, ToDoRequestDTO dto){
 

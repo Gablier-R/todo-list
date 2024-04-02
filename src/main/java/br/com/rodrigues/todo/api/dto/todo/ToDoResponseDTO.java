@@ -10,6 +10,7 @@ public record ToDoResponseDTO(
         String id,
         String name,
         Priorities priorities,
+        LocalDateTime limitDate,
         Boolean done,
         List<StepsResponseDTO> steps,
         LocalDateTime createdAt,

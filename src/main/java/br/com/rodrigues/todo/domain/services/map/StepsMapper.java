@@ -26,7 +26,6 @@ public class StepsMapper {
                 entity.getUpdatedAt()
         );
     }
-
     public List<Step> toListEntity (List<StepsRequestDTO> steps){
         return steps.stream().map(this::toEntity).toList();
     }

@@ -1,5 +1,6 @@
 package br.com.rodrigues.todo.infrastructure.exceptions;
 
+import br.com.rodrigues.todo.infrastructure.exceptions.custom.BusinessException;
 import br.com.rodrigues.todo.infrastructure.exceptions.custom.NotFoundException;
 import br.com.rodrigues.todo.infrastructure.exceptions.dto.ErrorResponseDTO;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,11 @@ public class GlobalExceptionHandler {
          var errors = exception.getFieldErrors();
 
         return ResponseEntity.badRequest().body(errors.stream().map(ErrorResponseDTO::new).toList());
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponseDTO> businessException (BusinessException exception){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body( new ErrorResponseDTO(exception.getMessage()));
     }
 
 

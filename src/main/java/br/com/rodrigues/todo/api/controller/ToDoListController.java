@@ -21,9 +21,9 @@ public class ToDoListController {
 
     private final TodoService toDoService;
 
-    @PostMapping
-    ResponseEntity<ToDoResponseDTO> saveToDo(@RequestBody @Valid ToDoRequestDTO todo) {
-        var savedToDo = toDoService.saveToDo(todo);
+    @PutMapping("/{userId}")
+    ResponseEntity<ToDoResponseDTO> saveToDo(@PathVariable String userId, @RequestBody @Valid ToDoRequestDTO todo) {
+        var savedToDo = toDoService.saveToDo(userId, todo);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -33,24 +33,24 @@ public class ToDoListController {
         return ResponseEntity.created(location).body(savedToDo);
     }
 
-    @GetMapping("/{id}")
-    ResponseEntity<ToDoResponseDTO> detailsToDo(@PathVariable String id){
-        return new ResponseEntity<>(toDoService.detailsToDo(id), HttpStatus.OK);
+    @GetMapping("/{userId}")
+    ResponseEntity<List<ToDoResponseDTO>> listAllToDoByUser (@PathVariable String userId){
+        return new ResponseEntity<>(toDoService.findAllToDo(userId), HttpStatus.OK);
     }
 
-    @GetMapping
-    ResponseEntity<List<ToDoResponseDTO>> listAllToDo (){
-        return new ResponseEntity<>(toDoService.findAllToDo(), HttpStatus.OK);
+    @GetMapping("/{userId}/{todoId}")
+    ResponseEntity<ToDoResponseDTO> detailsToDo(@PathVariable String userId,  @PathVariable String todoId){
+        return new ResponseEntity<>(toDoService.detailsToDo(userId, todoId), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    ResponseEntity<ToDoResponseDTO> updateToDo (@PathVariable String id, @RequestBody ToDoRequestDTO dto){
-        return new ResponseEntity<>(toDoService.updateToDo(id, dto), HttpStatus.OK);
+    @PutMapping("/{userId}/{todoId}")
+    ResponseEntity<ToDoResponseDTO> updateToDo (@PathVariable String userId, @PathVariable String todoId, @RequestBody ToDoRequestDTO dto){
+        return new ResponseEntity<>(toDoService.updateToDo(userId, todoId, dto), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteTodo(@PathVariable String id){
-        toDoService.deleteTodoById(id);
+    @PutMapping("/delete/{userId}/{todoId}")
+    ResponseEntity<Void> deleteTodo(@PathVariable String userId,  @PathVariable String todoId){
+        toDoService.deleteTodoByUserIdAndTodoId(userId, todoId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
