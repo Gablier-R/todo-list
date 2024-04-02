@@ -92,11 +92,8 @@ public class StepsService {
                 return stepsMapper.toDto(stepUpdated);
             }
         }
-
         throw new NotFoundException("Step not found in the specified ToDo");
     }
-
-
 
 
     public void deleteSteps(String userId, String todoId, String stepId) {
@@ -105,13 +102,12 @@ public class StepsService {
 
         var todo = todoService.validateListInUser(user, todoId);
 
-            for (Step step : todo.getSteps()) {
-                if (!step.getId().equals(stepId)) {
-                    throw new NotFoundException("Step not found in the specified ToDo");
-                }
-                todo.getSteps().remove(step);
-                userService.save(user);
+        for (Step step : todo.getSteps()) {
+            if (!step.getId().equals(stepId)) {
+                throw new NotFoundException("Step not found in the specified ToDo");
             }
-
+            todo.getSteps().remove(step);
+            userService.save(user);
+        }
     }
 }

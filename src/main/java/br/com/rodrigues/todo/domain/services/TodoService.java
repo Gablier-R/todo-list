@@ -94,21 +94,6 @@ public class TodoService {
         throw new NotFoundException("Todo list not found for user with id: " + user.getId());
     }
 
-//    public ToDoList updateStatusSteps(User user) {
-//
-//        user.getList().get()
-//
-//        if (todoList.getIsDone().equals(true)) {
-//
-//            for (Step step : todoList.getSteps()) {
-//                step.setIsDone(true);
-//            }
-//        }
-//        return todoList;
-//    }
-
-
-
     public ToDoList validateToDo(String id) {
         return todoRepository.findById(id).orElseThrow(() -> new NotFoundException("ToDo does not exists"));
     }
@@ -119,7 +104,5 @@ public class TodoService {
 
         return new ArrayList<>(user.getList());
     }
-//    public ToDoList save (User user){
-//        userService.save(user);
-//    }
+
 }
