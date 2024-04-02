@@ -45,6 +45,7 @@ public class ToDoMapper {
 
         entity.setName(dto.name() == null ? entity.getName() : dto.name());
         entity.setPriorities(dto.priorities() == null ? entity.getPriorities() : dto.priorities());
+        entity.setLimitDate( dto.limitDate() == null ? entity.getLimitDate() : dto.limitDate());
         entity.setIsDone(dto.done() == null ? entity.getIsDone() : dto.done());
         entity.setUpdatedAt(LocalDateTime.now());
 

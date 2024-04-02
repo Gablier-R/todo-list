@@ -25,13 +25,13 @@ public class ToDoList {
     private String id = UUID.randomUUID().toString();
     private String name;
     private Priorities priorities;
-    private LocalDateTime limitDate;
+    private LocalDate limitDate;
     private Boolean isDone = false;
     private List<Step> steps = new ArrayList<>();
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
 
-    public ToDoList(String name, Priorities priorities, LocalDateTime limitDate) {
+    public ToDoList(String name, Priorities priorities, LocalDate limitDate) {
         this.name = name;
         this.priorities = (priorities == null) ? Priorities.MEDIUM : priorities;
         this.limitDate = limitDate;

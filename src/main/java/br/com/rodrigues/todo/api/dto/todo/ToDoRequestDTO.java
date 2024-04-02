@@ -17,7 +17,7 @@ public record ToDoRequestDTO(
 
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         @Future(message = "Date must be in the past")
-        LocalDateTime limitDate,
+        LocalDate limitDate,
         Boolean done
 ) {
 }

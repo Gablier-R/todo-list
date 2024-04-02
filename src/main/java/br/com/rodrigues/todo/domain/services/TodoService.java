@@ -35,20 +35,30 @@ public class TodoService {
         return todoMapper.toDto(toDoList);
     }
 
-    public ToDoResponseDTO updateToDo(String userId, String todoId, ToDoRequestDTO dto){
-
-        var userValidated = userService.validateUser(userId);
-
-        var entity = validateListInUser(userValidated, todoId);
+    public ToDoResponseDTO updateToDo(String userId, String todoId, ToDoRequestDTO dto) {
+        User userValidated = userService.validateUser(userId);
+        ToDoList entity = validateListInUser(userValidated, todoId);
 
         ToDoList toDoListForSave = todoMapper.update(entity, dto);
 
-        updateStatusSteps(toDoListForSave);
+        // Verifica se a ToDoList está marcada como concluída e atualiza os passos
+        if (toDoListForSave.getIsDone()) {
+            for (Step step : toDoListForSave.getSteps()) {
+                step.setIsDone(true);
+            }
+        }
 
-        userService.save(userValidated);
+        // Atualiza a lista de tarefas do usuário com a ToDoList atualizada
+        userValidated.getList().stream()
+                .filter(list -> list.getId().equals(todoId))
+                .findFirst()
+                .ifPresent(list -> list.setSteps(toDoListForSave.getSteps()));
+
+        userService.save(userValidated); // Salva o usuário atualizado
 
         return todoMapper.toDto(toDoListForSave);
     }
+
 
     public ToDoResponseDTO detailsToDo(String userId, String todoId) {
 
@@ -57,12 +67,12 @@ public class TodoService {
         return todoMapper.toDto(validateListInUser(user, todoId));
     }
 
-    public List<ToDoResponseDTO> findAllToDo(String userId){
+    public List<ToDoResponseDTO> findAllToDo(String userId) {
 
         return todoMapper.toListDto(findAllListByUserId(userId));
     }
 
-    public void deleteTodoByUserIdAndTodoId(String userId, String  todoId){
+    public void deleteTodoByUserIdAndTodoId(String userId, String todoId) {
 
         var user = userService.validateUser(userId);
         var todoForDelete = validateListInUser(user, todoId);
@@ -83,35 +93,27 @@ public class TodoService {
         }
         throw new NotFoundException("Todo list not found for user with id: " + user.getId());
     }
-    public void updateStatusSteps (ToDoList todoList){
 
-        if (todoList.getIsDone().equals(true)){
+//    public ToDoList updateStatusSteps(User user) {
+//
+//        user.getList().get()
+//
+//        if (todoList.getIsDone().equals(true)) {
+//
+//            for (Step step : todoList.getSteps()) {
+//                step.setIsDone(true);
+//            }
+//        }
+//        return todoList;
+//    }
 
-            for(Step step: todoList.getSteps()){
-                step.setIsDone(true);
-            }
-            todoRepository.save(todoList);
-        }
-    }
-    public void updateStatusTodoList(ToDoList todoList) {
-        boolean allStepsDone = true;
 
-        for (Step step : todoList.getSteps()) {
-            if (!step.getIsDone()) {
-                allStepsDone = false;
-                break;
-            }
-        }
 
-        if (allStepsDone) {
-            todoList.setIsDone(true);
-            todoRepository.save(todoList);
-        }
-    }
-    public ToDoList validateToDo (String id) {
+    public ToDoList validateToDo(String id) {
         return todoRepository.findById(id).orElseThrow(() -> new NotFoundException("ToDo does not exists"));
     }
-    private List<ToDoList> findAllListByUserId(String userId){
+
+    private List<ToDoList> findAllListByUserId(String userId) {
 
         var user = userService.validateUser(userId);
 

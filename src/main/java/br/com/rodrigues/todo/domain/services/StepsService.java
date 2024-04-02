@@ -67,21 +67,37 @@ public class StepsService {
 
     public StepsResponseDTO updateStep(String userId, String todoId, String stepId, StepsRequestDTO stepsResponseDTO) {
         User user = userService.validateUser(userId);
-
-        var todo = todoService.validateListInUser(user, todoId);
+        ToDoList todo = todoService.validateListInUser(user, todoId);
 
         for (Step step : todo.getSteps()) {
             if (step.getId().equals(stepId)) {
+                Step stepUpdated = stepsMapper.updateEntity(step, stepsResponseDTO);
 
-                var stepUpdated = stepsMapper.updateEntity(step, stepsResponseDTO);
-                todoService.updateStatusTodoList(todo);
+                // Verifica se todos os passos estão concluídos
+                boolean allStepsDone = todo.getSteps().stream().allMatch(Step::getIsDone);
+                if (allStepsDone) {
+                    todo.setIsDone(true);
+                }
+
+                // Atualiza a lista de tarefas do usuário com a ToDoList atualizada
+                user.getList().stream()
+                        .filter(list -> list.getId().equals(todoId))
+                        .findFirst()
+                        .ifPresent(list -> list.setIsDone(todo.getIsDone()));
+
+                // Salva as alterações no usuário
                 userService.save(user);
-                return stepsMapper.toDto(stepUpdated);
 
+                // Retorna o passo atualizado
+                return stepsMapper.toDto(stepUpdated);
             }
         }
+
         throw new NotFoundException("Step not found in the specified ToDo");
     }
+
+
+
 
     public void deleteSteps(String userId, String todoId, String stepId) {
 
