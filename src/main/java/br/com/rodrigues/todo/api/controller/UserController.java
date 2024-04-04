@@ -4,6 +4,7 @@ import br.com.rodrigues.todo.api.dto.todo.ToDoRequestDTO;
 import br.com.rodrigues.todo.api.dto.todo.ToDoResponseDTO;
 import br.com.rodrigues.todo.api.dto.user.UserRequestDTO;
 import br.com.rodrigues.todo.api.dto.user.UserResponseDTO;
+import br.com.rodrigues.todo.domain.entities.ToDoList;
 import br.com.rodrigues.todo.domain.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +36,6 @@ public class UserController {
         return ResponseEntity.created(location).body(savedUser);
     }
 
-    @GetMapping
-    ResponseEntity<List<UserResponseDTO>> listAllUsers(){
-        return new ResponseEntity<>(userService.listAllUsers(), HttpStatus.FOUND);
-    }
 
     @GetMapping("/{id}")
     ResponseEntity<UserResponseDTO> listUserById(@PathVariable String id){
@@ -52,7 +49,8 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteById (@PathVariable String id){
-        userService.deleteById(id);
+        userService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
 }

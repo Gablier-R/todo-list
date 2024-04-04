@@ -18,22 +18,25 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 
-@Document(collection = "todo")
+@Document(collection = "toDoList")
 public class ToDoList {
 
     @Id
     private String id = UUID.randomUUID().toString();
     private String name;
-    private Priorities priorities;
-    private LocalDate limitDate;
+    private Priority priority;
     private Boolean isDone = false;
+    private LocalDate limitDate;
+    private Boolean isExpired = false;
     private List<Step> steps = new ArrayList<>();
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
+    private String userId;
 
-    public ToDoList(String name, Priorities priorities, LocalDate limitDate) {
+    public ToDoList(String name, Priority priority, LocalDate limitDate, String userId) {
         this.name = name;
-        this.priorities = (priorities == null) ? Priorities.MEDIUM : priorities;
+        this.priority = (priority == null) ? Priority.MEDIUM : priority;
         this.limitDate = limitDate;
+        this.userId = userId;
     }
 }

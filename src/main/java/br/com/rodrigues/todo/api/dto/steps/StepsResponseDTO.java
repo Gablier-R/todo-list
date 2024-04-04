@@ -7,6 +7,7 @@ public record StepsResponseDTO(
         String description,
         Boolean done,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+        String toDoListId
 ) {
 }

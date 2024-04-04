@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 
-@Document(collection = "list")
+@Document(collection = "user")
 public class User {
 
     @Id
@@ -28,13 +29,14 @@ public class User {
     private String name;
     private String lastName;
     private String email;
-    @Past
-    private String dateOfBirth;
+    //@Past
+    private LocalDate dateOfBirth;
     private List<ToDoList> list = new ArrayList<>();
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
 
-    public User(String name, String lastName, String email, String dateOfBirth) {
+
+    public User(String name, String lastName, String email, LocalDate dateOfBirth) {
         this.name = name;
         this.lastName = lastName;
         this.email = email;

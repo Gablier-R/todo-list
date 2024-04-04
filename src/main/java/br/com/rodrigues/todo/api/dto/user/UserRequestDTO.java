@@ -3,6 +3,8 @@ package br.com.rodrigues.todo.api.dto.user;
 import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
+
 public record UserRequestDTO(
 
         @NotBlank
@@ -20,9 +22,9 @@ public record UserRequestDTO(
         @Email
         String email,
 
-        @NotBlank(message = "Date cannot be blank")
+        //@NotBlank(message = "Date cannot be blank")
         @DateTimeFormat(pattern = "yyyy-MM-dd")
-        @Past(message = "Date must be in the past")
-        String dateOfBirth
+        //@Past(message = "Date must be in the past")
+        LocalDate dateOfBirth
 ) {
 }

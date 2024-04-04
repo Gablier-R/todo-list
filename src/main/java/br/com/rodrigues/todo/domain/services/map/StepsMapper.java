@@ -11,9 +11,10 @@ import java.util.List;
 @Component
 public class StepsMapper {
 
-    public Step toEntity(StepsRequestDTO dto) {
+    public Step toEntity(String toDoListId, StepsRequestDTO dto) {
         return new Step(
-                dto.description()
+                dto.description(),
+                toDoListId
         );
     }
 
@@ -23,12 +24,13 @@ public class StepsMapper {
                 entity.getDescription(),
                 entity.getIsDone(),
                 entity.getCreatedAt(),
-                entity.getUpdatedAt()
+                entity.getUpdatedAt(),
+                entity.getToDoListId()
         );
     }
 
-    public List<Step> toListEntity(List<StepsRequestDTO> steps) {
-        return steps.stream().map(this::toEntity).toList();
+    public List<Step> toListEntity(String toDoListId, List<StepsRequestDTO> steps) {
+        return steps.stream().map(dto -> toEntity(toDoListId, dto)).toList();
     }
 
     public List<StepsResponseDTO> toListDto(List<Step> steps) {

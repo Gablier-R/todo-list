@@ -2,14 +2,25 @@ package br.com.rodrigues.todo.domain.services;
 
 import br.com.rodrigues.todo.api.dto.user.UserRequestDTO;
 import br.com.rodrigues.todo.api.dto.user.UserResponseDTO;
+import br.com.rodrigues.todo.api.dto.utils.PageableDTO;
+import br.com.rodrigues.todo.domain.entities.Step;
+import br.com.rodrigues.todo.domain.entities.ToDoList;
 import br.com.rodrigues.todo.domain.entities.User;
+import br.com.rodrigues.todo.domain.repositories.StepRepository;
+import br.com.rodrigues.todo.domain.repositories.ToDoListRepository;
 import br.com.rodrigues.todo.domain.repositories.UserRepository;
+import br.com.rodrigues.todo.domain.services.map.MapPage;
 import br.com.rodrigues.todo.domain.services.map.UserMapper;
 import br.com.rodrigues.todo.infrastructure.exceptions.custom.BusinessException;
 import br.com.rodrigues.todo.infrastructure.exceptions.custom.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -18,7 +29,12 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ToDoListRepository toDoListRepository;
+    private final StepRepository stepRepository;
+
     private final UserMapper userMapper;
+    private final MapPage mapPage;
+
 
     public UserResponseDTO saveUser(UserRequestDTO dto) {
         var entity = userMapper.toEntity(dto);
@@ -55,17 +71,36 @@ public class UserService {
         userRepository.deleteById(entity.getId());
     }
 
-    public List<UserResponseDTO> listAllUsers() {
-        var entity = userRepository.findAll();
-        return userMapper.toListDto(entity);
+    public void deleteUser(String userId) {
+        var entity = validateUser(userId);
+
+        List<ToDoList> toDoLists = toDoListRepository.findAllToDoListByUserId(userId);
+
+        for (ToDoList toDoList : toDoLists) {
+            List<Step> steps = toDoList.getSteps();
+            stepRepository.deleteAll(steps);
+        }
+
+        toDoListRepository.deleteAll(toDoLists);
+        userRepository.delete(entity);
+    }
+
+
+    public PageableDTO listAll(Pageable pageable) {
+
+        Sort sort = Sort.by("name").ascending();
+        Page<User> page = userRepository.findAll(pageable);
+
+        List<User> entity = page.getContent();
+
+        var response = userMapper.toListDto(entity);
+
+        return mapPage.mapToResponseAll(response, page);
     }
 
     public User validateUser(String id) {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User does not exists"));
     }
 
-    public User save(User user) {
-        return userRepository.save(user);
-    }
 
 }
