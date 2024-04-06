@@ -1,7 +1,6 @@
 package br.com.rodrigues.todo.domain.entities;
 
 
-import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +28,6 @@ public class User {
     private String name;
     private String lastName;
     private String email;
-    //@Past
     private LocalDate dateOfBirth;
     private List<ToDoList> list = new ArrayList<>();
     private LocalDateTime createdAt = LocalDateTime.now();

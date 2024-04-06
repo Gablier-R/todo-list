@@ -2,6 +2,7 @@ package br.com.rodrigues.todo.api.dto.todo;
 
 import br.com.rodrigues.todo.api.dto.steps.StepsResponseDTO;
 import br.com.rodrigues.todo.domain.entities.Priority;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,6 +18,8 @@ public record ToDoResponseDTO(
         List<StepsResponseDTO> steps,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
+
+        @JsonIgnore
         String userId
 ) {
 }

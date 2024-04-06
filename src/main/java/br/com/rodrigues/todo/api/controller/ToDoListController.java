@@ -33,19 +33,19 @@ public class ToDoListController {
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(savedToDo.id())
+                .buildAndExpand(userId+"/"+savedToDo.id())
                 .toUri();
         return ResponseEntity.created(location).body(savedToDo);
     }
 
     @GetMapping("/{userId}")
     ResponseEntity<PageableDTO> listAllToDoByUser(@PathVariable String userId,
-                                                  @RequestParam(required = false) String priority,
+                                                  @RequestParam(defaultValue = DEFAULT_STATUS, required = false) boolean status,
                                                   @RequestParam(defaultValue = DEFAULT_PAGE_NUMBER, required = false) int pageNo,
                                                   @RequestParam(defaultValue = DEFAULT_PAGE_SIZE, required = false) int pageSize,
                                                   @RequestParam(defaultValue = DEFAULT_SORT, required = false) String sortBy) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-        return new ResponseEntity<>(toDoService.findAllToDo(userId, pageable), HttpStatus.OK);
+        return new ResponseEntity<>(toDoService.findAllToDo(userId, pageable, String.valueOf(status)), HttpStatus.OK);
     }
 
     @GetMapping("/filter/{userId}")

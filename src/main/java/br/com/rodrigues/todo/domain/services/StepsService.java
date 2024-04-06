@@ -35,7 +35,7 @@ public class StepsService {
 
         userService.validateUser(userId);
 
-        var todo = toDoListService.validateToDoList(todoId);
+        toDoListService.validateToDoList(todoId);
 
         var entity = stepsMapper.toListEntity(todoId, dto);
 

@@ -10,7 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 import static br.com.rodrigues.todo.utils.Constants.DEFAULT_PAGE_NUMBER;
@@ -23,6 +25,18 @@ import static br.com.rodrigues.todo.utils.Constants.DEFAULT_PAGE_SIZE;
 public class StepsController {
 
     private final StepsService stepsService;
+
+//    @PostMapping("/{userId}/{todoId}")
+//    ResponseEntity<List<StepsResponseDTO>> saveSteps(@PathVariable String userId, @PathVariable String todoId, @RequestBody List<StepsRequestDTO> dto) {
+//        var saveStep = stepsService.saveStep(userId, todoId, dto);
+//
+//        URI location = ServletUriComponentsBuilder
+//                .fromCurrentRequest()
+//                .path("/{id}")
+//                .buildAndExpand(saveStep)
+//                .toUri();
+//        return ResponseEntity.created(location).body(saveStep);
+//    }
 
     @PostMapping("/{userId}/{todoId}")
     ResponseEntity<List<StepsResponseDTO>> saveSteps(@PathVariable String userId, @PathVariable String todoId, @RequestBody List<StepsRequestDTO> dto) {

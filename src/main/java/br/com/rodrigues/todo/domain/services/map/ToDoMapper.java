@@ -45,7 +45,6 @@ public class ToDoMapper {
         return toDoList.stream().map(this::toDto).toList();
     }
 
-
     public ToDoList update(ToDoList entity, ToDoRequestDTO dto) {
 
         entity.setName(dto.name() == null ? entity.getName() : dto.name());

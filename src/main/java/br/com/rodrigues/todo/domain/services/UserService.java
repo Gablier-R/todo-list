@@ -33,7 +33,6 @@ public class UserService {
     private final StepRepository stepRepository;
 
     private final UserMapper userMapper;
-    private final MapPage mapPage;
 
 
     public UserResponseDTO saveUser(UserRequestDTO dto) {
@@ -76,26 +75,14 @@ public class UserService {
 
         List<ToDoList> toDoLists = toDoListRepository.findAllToDoListByUserId(userId);
 
+
         for (ToDoList toDoList : toDoLists) {
-            List<Step> steps = toDoList.getSteps();
-            stepRepository.deleteAll(steps);
+            List<Step> stepList = stepRepository.findAllByToDoListId(toDoList.getId());
+            stepRepository.deleteAll(stepList);
         }
 
         toDoListRepository.deleteAll(toDoLists);
         userRepository.delete(entity);
-    }
-
-
-    public PageableDTO listAll(Pageable pageable) {
-
-        Sort sort = Sort.by("name").ascending();
-        Page<User> page = userRepository.findAll(pageable);
-
-        List<User> entity = page.getContent();
-
-        var response = userMapper.toListDto(entity);
-
-        return mapPage.mapToResponseAll(response, page);
     }
 
     public User validateUser(String id) {

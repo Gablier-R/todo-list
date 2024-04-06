@@ -25,7 +25,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    ResponseEntity<UserResponseDTO> saveUser (@RequestBody @Valid UserRequestDTO dto){
+    ResponseEntity<UserResponseDTO> saveUser(@RequestBody @Valid UserRequestDTO dto) {
         var savedUser = userService.saveUser(dto);
 
         URI location = ServletUriComponentsBuilder
@@ -38,17 +38,17 @@ public class UserController {
 
 
     @GetMapping("/{id}")
-    ResponseEntity<UserResponseDTO> listUserById(@PathVariable String id){
+    ResponseEntity<UserResponseDTO> listUserById(@PathVariable String id) {
         return new ResponseEntity<>(userService.listById(id), HttpStatus.FOUND);
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<UserResponseDTO> updateUser (@PathVariable String id, @RequestBody UserRequestDTO dto){
-        return new ResponseEntity<>(userService.updateUser(id,dto), HttpStatus.ACCEPTED);
+    ResponseEntity<UserResponseDTO> updateUser(@PathVariable String id, @RequestBody UserRequestDTO dto) {
+        return new ResponseEntity<>(userService.updateUser(id, dto), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteById (@PathVariable String id){
+    ResponseEntity<Void> deleteById(@PathVariable String id) {
         userService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

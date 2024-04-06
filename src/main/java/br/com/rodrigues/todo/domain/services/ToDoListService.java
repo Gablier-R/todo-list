@@ -12,8 +12,10 @@ import br.com.rodrigues.todo.domain.services.map.ToDoMapper;
 import br.com.rodrigues.todo.infrastructure.exceptions.custom.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,10 +63,14 @@ public class ToDoListService {
         return todoMapper.toDto(validateToDoList(todoId));
     }
 
-    public PageableDTO findAllToDo(String userId, Pageable pageable) {
+    public PageableDTO findAllToDo(String userId, Pageable pageable, String status) {
         Page<ToDoList> page = toDoListRepository.findAllToDoListByUserId(userId, pageable);
 
-        var response = todoMapper.toListDto(page.getContent());
+        List<ToDoResponseDTO> response;
+
+        var listToDo = page.getContent().stream().filter(filtered -> filtered.getIsDone().equals(Boolean.parseBoolean(status))).toList();
+
+        response = todoMapper.toListDto(listToDo);
 
         return mapPage.mapToResponseAll(response, page);
     }
@@ -79,12 +85,28 @@ public class ToDoListService {
     public void deleteTodoByUserIdAndTodoId(String userId, String todoId) {
         userService.validateUser(userId);
 
-        var todo = validateToDoList(todoId);
+        validateToDoList(todoId);
 
-        List<Step> stepsForDelete = todo.getSteps();
-        stepRepository.deleteAll(stepsForDelete);
+        List<Step> stepList = stepRepository.findAllByToDoListId(todoId);
+        stepRepository.deleteAll(stepList);
 
         toDoListRepository.deleteById(todoId);
+    }
+
+    //@Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(fixedRate = 60000)
+    public void verifyDateLimitTodoList() {
+
+        List<ToDoList> listToDoList = toDoListRepository.findAll();
+
+        var todoListFilter = listToDoList.stream().filter(list -> list.getIsExpired().equals(false)).toList();
+
+        for (ToDoList list : todoListFilter) {
+            if (!LocalDate.now().isBefore(list.getLimitDate())) {
+                list.setIsExpired(true);
+                toDoListRepository.save(list);
+            }
+        }
     }
 
 

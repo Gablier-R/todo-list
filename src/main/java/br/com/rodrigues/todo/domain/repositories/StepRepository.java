@@ -12,4 +12,5 @@ import java.util.List;
 public interface StepRepository extends MongoRepository<Step, String> {
 
     Page<Step> findAllByToDoListId (String toDoListId, Pageable pageable);
+    List<Step> findAllByToDoListId (String toDoListId);
 }

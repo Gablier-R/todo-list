@@ -24,7 +24,7 @@ public record UserRequestDTO(
 
         //@NotBlank(message = "Date cannot be blank")
         @DateTimeFormat(pattern = "yyyy-MM-dd")
-        //@Past(message = "Date must be in the past")
+        @Past(message = "Date must be in the past")
         LocalDate dateOfBirth
 ) {
 }
