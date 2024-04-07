@@ -1,6 +1,6 @@
 package br.com.rodrigues.todo.domain.entities;
 
-public enum Priorities {
+public enum Priority {
 
     LOW,
     MEDIUM,

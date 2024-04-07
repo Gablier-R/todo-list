@@ -1,5 +1,6 @@
 package br.com.rodrigues.todo.domain.entities;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,30 +14,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 
-@Document(collection = "toDoList")
-public class ToDoList {
+@Document(collection = "user")
+public class User {
 
     @Id
     private String id = UUID.randomUUID().toString();
     private String name;
-    private Priority priority;
-    private Boolean isDone = false;
-    private LocalDate limitDate;
-    private Boolean isExpired = false;
-    private List<Step> steps = new ArrayList<>();
+    private String lastName;
+    private String email;
+    private LocalDate dateOfBirth;
+    private List<ToDoList> list = new ArrayList<>();
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
-    private String userId;
 
-    public ToDoList(String name, Priority priority, LocalDate limitDate, String userId) {
+
+    public User(String name, String lastName, String email, LocalDate dateOfBirth) {
         this.name = name;
-        this.priority = (priority == null) ? Priority.MEDIUM : priority;
-        this.limitDate = limitDate;
-        this.userId = userId;
+        this.lastName = lastName;
+        this.email = email;
+        this.dateOfBirth = dateOfBirth;
     }
 }

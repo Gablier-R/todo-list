@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 @RequiredArgsConstructor
 
 @Component
@@ -15,37 +16,44 @@ public class ToDoMapper {
 
     private final StepsMapper stepsMapper;
 
-    public ToDoResponseDTO toDto (ToDoList entity){
+    public ToDoResponseDTO toDto(ToDoList entity) {
         return new ToDoResponseDTO(
                 entity.getId(),
                 entity.getName(),
-                entity.getPriorities(),
+                entity.getPriority(),
                 entity.getIsDone(),
+                entity.getLimitDate(),
+                entity.getIsExpired(),
                 stepsMapper.toListDto(entity.getSteps()),
                 entity.getCreatedAt(),
-                entity.getUpdatedAt()
+                entity.getUpdatedAt(),
+                entity.getUserId()
         );
     }
 
-    public ToDoList toEntity (ToDoRequestDTO dto){
+    public ToDoList toEntity(String userId, ToDoRequestDTO dto) {
         return new ToDoList(
                 dto.name(),
-                dto.priorities()
+                dto.priority(),
+                dto.limitDate(),
+                userId
+
         );
     }
 
-    public List<ToDoResponseDTO> toList(List<ToDoList> toDoList) {
+    public List<ToDoResponseDTO> toListDto(List<ToDoList> toDoList) {
         return toDoList.stream().map(this::toDto).toList();
     }
 
-    public ToDoList update (ToDoList entity, ToDoRequestDTO dto){
+    public ToDoList update(ToDoList entity, ToDoRequestDTO dto) {
 
         entity.setName(dto.name() == null ? entity.getName() : dto.name());
-        entity.setPriorities(dto.priorities() == null ? entity.getPriorities() : dto.priorities());
+        entity.setPriority(dto.priority() == null ? entity.getPriority() : dto.priority());
+        entity.setLimitDate(dto.limitDate() == null ? entity.getLimitDate() : dto.limitDate());
         entity.setIsDone(dto.done() == null ? entity.getIsDone() : dto.done());
         entity.setUpdatedAt(LocalDateTime.now());
 
-        return  entity;
+        return entity;
     }
 
 }

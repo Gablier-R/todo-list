@@ -11,34 +11,36 @@ import java.util.List;
 @Component
 public class StepsMapper {
 
-    public Step toEntity (StepsRequestDTO dto){
+    public Step toEntity(String toDoListId, StepsRequestDTO dto) {
         return new Step(
-                dto.description()
+                dto.description(),
+                toDoListId
         );
     }
 
-    public StepsResponseDTO toDto (Step entity){
+    public StepsResponseDTO toDto(Step entity) {
         return new StepsResponseDTO(
                 entity.getId(),
                 entity.getDescription(),
                 entity.getIsDone(),
                 entity.getCreatedAt(),
-                entity.getUpdatedAt()
+                entity.getUpdatedAt(),
+                entity.getToDoListId()
         );
     }
 
-    public List<Step> toListEntity (List<StepsRequestDTO> steps){
-        return steps.stream().map(this::toEntity).toList();
+    public List<Step> toListEntity(String toDoListId, List<StepsRequestDTO> steps) {
+        return steps.stream().map(dto -> toEntity(toDoListId, dto)).toList();
     }
 
-    public List<StepsResponseDTO> toListDto (List<Step>  steps){
+    public List<StepsResponseDTO> toListDto(List<Step> steps) {
         return steps.stream().map(this::toDto).toList();
     }
 
-    public Step updateEntity (Step entity, StepsRequestDTO dto){
+    public Step updateEntity(Step entity, StepsRequestDTO dto) {
 
-        entity.setDescription( dto.description() == null ? entity.getDescription() : dto.description());
-        entity.setIsDone( dto.done() == null ? entity.getIsDone() : dto.done());
+        entity.setDescription(dto.description() == null ? entity.getDescription() : dto.description());
+        entity.setIsDone(dto.done() == null ? entity.getIsDone() : dto.done());
         entity.setUpdatedAt(LocalDateTime.now());
 
         return entity;

@@ -2,9 +2,18 @@ package br.com.rodrigues.todo.domain.services;
 
 import br.com.rodrigues.todo.api.dto.steps.StepsRequestDTO;
 import br.com.rodrigues.todo.api.dto.steps.StepsResponseDTO;
+import br.com.rodrigues.todo.api.dto.utils.PageableDTO;
 import br.com.rodrigues.todo.domain.entities.Step;
+import br.com.rodrigues.todo.domain.entities.ToDoList;
+import br.com.rodrigues.todo.domain.repositories.StepRepository;
+import br.com.rodrigues.todo.domain.services.map.MapPage;
 import br.com.rodrigues.todo.domain.services.map.StepsMapper;
+import br.com.rodrigues.todo.infrastructure.exceptions.custom.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,72 +24,127 @@ import java.util.List;
 @Service
 public class StepsService {
 
-    private final TodoService todoService;
+    private final UserService userService;
+    private final StepRepository stepRepository;
+    private final ToDoListService toDoListService;
     private final StepsMapper stepsMapper;
+    private final MapPage mapPage;
 
 
-    public List<StepsResponseDTO> saveStep (String id, List<StepsRequestDTO>  dto){
+    public List<StepsResponseDTO> saveStep(String userId, String todoId, List<StepsRequestDTO> dto) {
 
-        var todo = todoService.findById(id);
+        userService.validateUser(userId);
 
-        var entity = stepsMapper.toListEntity(dto);
+        toDoListService.validateToDoList(todoId);
+
+        var entity = stepsMapper.toListEntity(todoId, dto);
 
         List<Step> stepList = new ArrayList<>(entity);
 
-        todo.getSteps().addAll(stepList);
+        var response = stepRepository.saveAll(stepList);
 
-        todoService.save(todo);
-
-        return stepsMapper.toListDto(todo.getSteps());
+        return stepsMapper.toListDto(response);
     }
 
-    public List<StepsResponseDTO> listStepsByTodo (String todoId) {
-        var todo = todoService.findById(todoId);
+    public PageableDTO listStepsByTodo(String userId, String todoId, Pageable pageable) {
 
-        var steps = todo.getSteps();
+        userService.validateUser(userId);
 
-        return stepsMapper.toListDto(steps);
+        toDoListService.validateToDoList(todoId);
+
+        Page<Step> page = stepRepository.findAllByToDoListId(todoId, pageable);
+
+
+        var response = stepsMapper.toListDto(page.getContent());
+
+        return mapPage.mapToResponseAll(response, page);
     }
 
-    public StepsResponseDTO findStepByTodoIdAndStepId(String todoId, String stepId){
-        var todo = todoService.findById(todoId);
+    public StepsResponseDTO updateStep(String userId, String toDoListId, String stepId, StepsRequestDTO stepsResponseDTO) {
 
-        var steps = todo.getSteps();
+        userService.validateUser(userId);
 
-        for (Step step: steps){
-            if (step.getId().equals(stepId)){
-                return stepsMapper.toDto(step);
-            }
-        }
-        return null;
-    }
+        var todo = toDoListService.validateToDoList(toDoListId);
 
-    public StepsResponseDTO updateStep (String todoId, String stepId, StepsRequestDTO stepsResponseDTO){
-        var todo = todoService.findById(todoId);
+        var validatedStep = validatedStep(stepId);
 
-        Step response = null;
+        var entityUpdated = stepsMapper.updateEntity(validatedStep, stepsResponseDTO);
 
-        for (Step step: todo.getSteps()){
-            if (step.getId().equals(stepId)){
-                stepsMapper.updateEntity(step, stepsResponseDTO);
-                todoService.save(todo);
+        var response = stepRepository.save(entityUpdated);
 
-                response = step;
-            }
-        }
+        updateStatusStepsIsDone(todo);
 
-        todoService.updateStatusTodoList(todo);
         return stepsMapper.toDto(response);
     }
 
-    public void deleteSteps (String todoId, List<String> listIdSteps){
-        var todo = todoService.findById(todoId);
+    public void updateStatusStepsIsDone(ToDoList toDoList) {
 
-        for(Step step: todo.getSteps()){
-            if (step.getId().equals(listIdSteps)){
-                todoService.deleteTodoById(String.valueOf(step));
+        List<Step> stepResponse = new ArrayList<>();
+        if (toDoList.getIsDone().equals(true)) {
+            for (Step step : toDoList.getSteps()) {
+                step.setIsDone(true);
+                stepResponse.add(step);
             }
         }
+
+        stepRepository.saveAll(stepResponse);
     }
 
+    public StepsResponseDTO findStepByTodoIdAndStepId(String userId, String toDoListId, String stepId) {
+
+        userService.validateUser(userId);
+
+        toDoListService.validateToDoList(toDoListId);
+
+        var response = validatedStep(stepId);
+        return stepsMapper.toDto(response);
+    }
+
+    public void deleteSteps(String userId, String todoId, String stepId) {
+
+        userService.validateUser(userId);
+
+        toDoListService.validateToDoList(todoId);
+
+        validatedStep(stepId);
+
+        stepRepository.deleteById(stepId);
+    }
+
+    private Step validatedStep(String id) {
+        return stepRepository.findById(id).orElseThrow(() -> new NotFoundException("Step not found in the specified ToDo"));
+    }
+
+
 }
+
+//public StepsResponseDTO updateStep(String stepId, StepsRequestDTO stepsResponseDTO) {
+//
+//        var response = validatedStep(stepId);
+//
+//
+//        for (Step step : todo.getSteps()) {
+//            if (step.getId().equals(stepId)) {
+//                Step stepUpdated = stepsMapper.updateEntity(step, stepsResponseDTO);
+//
+//                // Verifica se todos os passos estão concluídos
+//                boolean allStepsDone = todo.getSteps().stream().allMatch(Step::getIsDone);
+//                if (allStepsDone) {
+//                    todo.setIsDone(true);
+//                }
+//
+//                // Atualiza a lista de tarefas do usuário com a ToDoList atualizada
+//                user.getList().stream()
+//                        .filter(list -> list.getId().equals(todoId))
+//                        .findFirst()
+//                        .ifPresent(list -> list.setIsDone(todo.getIsDone()));
+//
+//                // Salva as alterações no usuário
+//                userService.save(user);
+//
+//                // Retorna o passo atualizado
+//                return stepsMapper.toDto(stepUpdated);
+//            }
+//        }
+//        throw new NotFoundException("Step not found in the specified ToDo");
+//    }

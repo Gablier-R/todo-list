@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 
+@Document(collection = "step")
 public class Step {
 
     @Id
@@ -22,8 +24,10 @@ public class Step {
     private Boolean isDone = false;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
+    private String toDoListId;
 
-    public Step(String description) {
+    public Step(String description, String toDoListId) {
         this.description = description;
+        this.toDoListId = toDoListId;
     }
 }
