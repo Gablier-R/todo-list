@@ -2,6 +2,9 @@ package br.com.rodrigues.todo.api.controller;
 
 import br.com.rodrigues.todo.api.dto.utils.PageableDTO;
 import br.com.rodrigues.todo.domain.services.GeneralService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +27,11 @@ public class GeneralController {
 
     private final GeneralService generalService;
 
+    @Operation(summary = "Listar todos os dados encadeados", method ="GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Erro ao buscar dados"),
+    })
     @GetMapping
     ResponseEntity<PageableDTO> All(@RequestParam ( defaultValue = DEFAULT_PAGE_NUMBER, required = false) int pageNo,
                                     @RequestParam ( defaultValue = DEFAULT_PAGE_SIZE, required = false) int pageSize){

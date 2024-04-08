@@ -10,9 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 
 import static br.com.rodrigues.todo.utils.Constants.DEFAULT_PAGE_NUMBER;
@@ -40,7 +38,7 @@ public class StepsController {
 
     @PostMapping("/{userId}/{todoId}")
     ResponseEntity<List<StepsResponseDTO>> saveSteps(@PathVariable String userId, @PathVariable String todoId, @RequestBody List<StepsRequestDTO> dto) {
-        return new ResponseEntity<>(stepsService.saveStep(userId, todoId, dto), HttpStatus.CREATED);
+        return new ResponseEntity<>(stepsService.saveStepBy(userId, todoId, dto), HttpStatus.CREATED);
     }
 
     @GetMapping("/{userId}/{todoId}")
@@ -48,22 +46,22 @@ public class StepsController {
                                                   @RequestParam(defaultValue = DEFAULT_PAGE_NUMBER, required = false) int pageNo,
                                                   @RequestParam(defaultValue = DEFAULT_PAGE_SIZE, required = false) int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return new ResponseEntity<>(stepsService.listStepsByTodo(userId, todoId, pageable), HttpStatus.OK);
+        return new ResponseEntity<>(stepsService.listStepsBy(userId, todoId, pageable), HttpStatus.OK);
     }
 
     @GetMapping("/{userId}/{todoId}/{stepId}")
     ResponseEntity<StepsResponseDTO> findByStepByTodoIdAndStepId(@PathVariable String userId, @PathVariable String todoId, @PathVariable String stepId) {
-        return new ResponseEntity<>(stepsService.findStepByTodoIdAndStepId(userId, todoId, stepId), HttpStatus.OK);
+        return new ResponseEntity<>(stepsService.findUniqueStepBy(userId, todoId, stepId), HttpStatus.OK);
     }
 
     @PutMapping("/{userId}/{todoId}/{stepId}")
     ResponseEntity<StepsResponseDTO> updateStep(@PathVariable String userId, @PathVariable String todoId, @PathVariable String stepId, @RequestBody StepsRequestDTO dto) {
-        return new ResponseEntity<>(stepsService.updateStep(userId, todoId, stepId, dto), HttpStatus.OK);
+        return new ResponseEntity<>(stepsService.updateStepBy(userId, todoId, stepId, dto), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{userId}/{todoId}/{stepId}")
     ResponseEntity<Void> delete(@PathVariable String userId, @PathVariable String todoId, @PathVariable String stepId) {
-        stepsService.deleteSteps(userId, todoId, stepId);
+        stepsService.deleteStepsBy(userId, todoId, stepId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
