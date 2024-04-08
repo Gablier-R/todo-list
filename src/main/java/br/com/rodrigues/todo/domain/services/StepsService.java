@@ -11,9 +11,7 @@ import br.com.rodrigues.todo.domain.services.map.StepsMapper;
 import br.com.rodrigues.todo.infrastructure.exceptions.custom.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,7 +29,7 @@ public class StepsService {
     private final MapPage mapPage;
 
 
-    public List<StepsResponseDTO> saveStep(String userId, String todoId, List<StepsRequestDTO> dto) {
+    public List<StepsResponseDTO> saveStepBy(String userId, String todoId, List<StepsRequestDTO> dto) {
 
         userService.validateUser(userId);
 
@@ -46,7 +44,7 @@ public class StepsService {
         return stepsMapper.toListDto(response);
     }
 
-    public PageableDTO listStepsByTodo(String userId, String todoId, Pageable pageable) {
+    public PageableDTO listStepsBy(String userId, String todoId, Pageable pageable) {
 
         userService.validateUser(userId);
 
@@ -54,30 +52,29 @@ public class StepsService {
 
         Page<Step> page = stepRepository.findAllByToDoListId(todoId, pageable);
 
-
         var response = stepsMapper.toListDto(page.getContent());
 
         return mapPage.mapToResponseAll(response, page);
     }
 
-    public StepsResponseDTO updateStep(String userId, String toDoListId, String stepId, StepsRequestDTO stepsResponseDTO) {
+    public StepsResponseDTO updateStepBy(String userId, String toDoListId, String stepId, StepsRequestDTO stepsResponseDTO) {
 
         userService.validateUser(userId);
 
         var todo = toDoListService.validateToDoList(toDoListId);
 
-        var validatedStep = validatedStep(stepId);
+        var validatedStep = validatedStepBy(stepId);
 
         var entityUpdated = stepsMapper.updateEntity(validatedStep, stepsResponseDTO);
 
         var response = stepRepository.save(entityUpdated);
 
-        updateStatusStepsIsDone(todo);
+        updateStepsIsDone(todo);
 
         return stepsMapper.toDto(response);
     }
 
-    public void updateStatusStepsIsDone(ToDoList toDoList) {
+    public void updateStepsIsDone(ToDoList toDoList) {
 
         List<Step> stepResponse = new ArrayList<>();
         if (toDoList.getIsDone().equals(true)) {
@@ -90,28 +87,28 @@ public class StepsService {
         stepRepository.saveAll(stepResponse);
     }
 
-    public StepsResponseDTO findStepByTodoIdAndStepId(String userId, String toDoListId, String stepId) {
+    public StepsResponseDTO findUniqueStepBy(String userId, String toDoListId, String stepId) {
 
         userService.validateUser(userId);
 
         toDoListService.validateToDoList(toDoListId);
 
-        var response = validatedStep(stepId);
+        var response = validatedStepBy(stepId);
         return stepsMapper.toDto(response);
     }
 
-    public void deleteSteps(String userId, String todoId, String stepId) {
+    public void deleteStepsBy(String userId, String todoId, String stepId) {
 
         userService.validateUser(userId);
 
         toDoListService.validateToDoList(todoId);
 
-        validatedStep(stepId);
+        validatedStepBy(stepId);
 
         stepRepository.deleteById(stepId);
     }
 
-    private Step validatedStep(String id) {
+    private Step validatedStepBy(String id) {
         return stepRepository.findById(id).orElseThrow(() -> new NotFoundException("Step not found in the specified ToDo"));
     }
 

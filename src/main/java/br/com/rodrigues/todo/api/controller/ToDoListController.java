@@ -28,7 +28,7 @@ public class ToDoListController {
 
     @PostMapping("/{userId}")
     ResponseEntity<ToDoResponseDTO> saveToDo(@PathVariable String userId, @RequestBody @Valid ToDoRequestDTO todo) {
-        var savedToDo = toDoService.saveToDo(userId, todo);
+        var savedToDo = toDoService.saveToDoBy(userId, todo);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -45,7 +45,7 @@ public class ToDoListController {
                                                   @RequestParam(defaultValue = DEFAULT_PAGE_SIZE, required = false) int pageSize,
                                                   @RequestParam(defaultValue = DEFAULT_SORT, required = false) String sortBy) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-        return new ResponseEntity<>(toDoService.findAllToDo(userId, pageable, String.valueOf(status)), HttpStatus.OK);
+        return new ResponseEntity<>(toDoService.findAllToDoBy(userId, pageable, String.valueOf(status)), HttpStatus.OK);
     }
 
     @GetMapping("/filter/{userId}")
@@ -54,23 +54,23 @@ public class ToDoListController {
                                                           @RequestParam(defaultValue = DEFAULT_PAGE_SIZE, required = false) int pageSize,
                                                           @RequestParam String priority) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return new ResponseEntity<>(toDoService.findAllToDoFilterCustom(userId, priority, pageable), HttpStatus.OK);
+        return new ResponseEntity<>(toDoService.findAllToDoFilterCustomBy(userId, priority, pageable), HttpStatus.OK);
     }
 
 
     @GetMapping("/{userId}/{todoId}")
     ResponseEntity<ToDoResponseDTO> detailsToDo(@PathVariable String userId, @PathVariable String todoId) {
-        return new ResponseEntity<>(toDoService.detailsToDo(userId, todoId), HttpStatus.OK);
+        return new ResponseEntity<>(toDoService.detailsToDoBy(userId, todoId), HttpStatus.OK);
     }
 
     @PutMapping("/{userId}/{todoId}")
     ResponseEntity<ToDoResponseDTO> updateToDo(@PathVariable String userId, @PathVariable String todoId, @RequestBody ToDoRequestDTO dto) {
-        return new ResponseEntity<>(toDoService.updateToDo(userId, todoId, dto), HttpStatus.OK);
+        return new ResponseEntity<>(toDoService.updateToDoBy(userId, todoId, dto), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{userId}/{todoId}")
     ResponseEntity<Void> deleteTodo(@PathVariable String userId, @PathVariable String todoId) {
-        toDoService.deleteTodoByUserIdAndTodoId(userId, todoId);
+        toDoService.deleteToDoBy(userId, todoId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

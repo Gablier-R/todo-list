@@ -8,8 +8,6 @@ import br.com.rodrigues.todo.domain.repositories.StepRepository;
 import br.com.rodrigues.todo.domain.repositories.ToDoListRepository;
 import br.com.rodrigues.todo.domain.repositories.UserRepository;
 import br.com.rodrigues.todo.domain.services.map.MapPage;
-import br.com.rodrigues.todo.domain.services.map.StepsMapper;
-import br.com.rodrigues.todo.domain.services.map.ToDoMapper;
 import br.com.rodrigues.todo.domain.services.map.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,8 +27,6 @@ public class GeneralService {
     private final StepRepository stepRepository;
 
     private final UserMapper userMapper;
-    private final ToDoMapper toDoMapper;
-    private final StepsMapper stepsMapper;
 
     private final MapPage mapPage;
 
@@ -58,19 +54,6 @@ public class GeneralService {
             userResponse.add(user);
         }
         return userResponse;
-    }
-
-
-    private List<Step> mapSteps(List<ToDoList> todoLists) {
-
-        List<Step> stepResponse = new ArrayList<>();
-
-        for (ToDoList todo : todoLists) {
-            List<Step> stepsForToDo = stepRepository.findAllByToDoListId(todo.getId());
-            stepResponse.addAll(stepsForToDo);
-        }
-
-        return stepResponse;
     }
 
 }
