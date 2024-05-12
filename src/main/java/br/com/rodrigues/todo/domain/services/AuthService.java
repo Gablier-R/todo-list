@@ -1,5 +1,7 @@
 package br.com.rodrigues.todo.domain.services;
 
+
+
 import br.com.rodrigues.todo.api.dto.auth.LoginRequestDTO;
 import br.com.rodrigues.todo.api.dto.auth.LoginResponseDTO;
 import br.com.rodrigues.todo.domain.repositories.UserRepository;
@@ -7,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +22,15 @@ public class AuthService {
 
     private static final Long EXPIRESIN = 300L;
 
+    private final JwtEncoder jwtEncoder;
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder encoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public LoginResponseDTO authUser (LoginRequestDTO requestDTO){
 
-       var user = userRepository.findByEmail(requestDTO.username());
+       var user = userRepository.findByEmail(requestDTO.email());
 
-       if (user.getList().isEmpty() || !user.isLoginCorrect(requestDTO, encoder)){
+       if (user == null || !user.isLoginCorrect(requestDTO, passwordEncoder)){
            throw new BadCredentialsException("User or password is invalid!");
        }
 
@@ -37,7 +41,7 @@ public class AuthService {
                .expiresAt(Instant.now().plusSeconds(EXPIRESIN))
                .build();
 
-       var jwtValue = encoder.encode(JwtEncoderParameters.from(claims).toString());
+        var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 
        return new LoginResponseDTO(jwtValue, EXPIRESIN);
     }

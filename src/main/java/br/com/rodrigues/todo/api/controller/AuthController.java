@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/login")
-public class TokenController {
+public class AuthController {
 
     private final JwtEncoder jwtEncoder;
     private final AuthService authService;
