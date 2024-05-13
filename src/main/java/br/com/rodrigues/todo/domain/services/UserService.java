@@ -38,15 +38,10 @@ public class UserService {
     public UserResponseDTO saveUser(UserRequestDTO dto) {
         var entity = userMapper.toEntity(dto);
 
-        var userExists = userRepository.existsByEmail(entity.getEmail());
-
-        if (userExists) {
+        if (userRepository.existsByEmail(entity.getEmail())) {
             throw new BusinessException("User already exists");
         }
-
-        var response = userRepository.save(entity);
-
-        return userMapper.toDto(response);
+        return userMapper.toDto(userRepository.save(entity));
     }
 
     public UserResponseDTO updateUser(String userId, UserRequestDTO dto) {
@@ -64,11 +59,6 @@ public class UserService {
         return userMapper.toDto(validateUser(id));
     }
 
-    public void deleteById(String id) {
-        var entity = validateUser(id);
-
-        userRepository.deleteById(entity.getId());
-    }
 
     public void deleteUser(String userId) {
         var entity = validateUser(userId);

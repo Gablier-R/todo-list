@@ -92,21 +92,21 @@ public class ToDoListService {
         toDoListRepository.deleteById(todoId);
     }
 
-    //@Scheduled(cron = "0 0 0 * * *")
-    @Scheduled(fixedRate = 60000)
-    public void verifyDateLimitTodoList() {
-
-        List<ToDoList> listToDoList = toDoListRepository.findAll();
-
-        var todoListFilter = listToDoList.stream().filter(list -> list.getIsExpired().equals(false)).toList();
-
-        for (ToDoList list : todoListFilter) {
-            if (!LocalDate.now().isBefore(list.getLimitDate())) {
-                list.setIsExpired(true);
-                toDoListRepository.save(list);
-            }
-        }
-    }
+//    @Scheduled(cron = "0 0 0 * * *")
+//    @Scheduled(fixedRate = 60000)
+//    public void verifyDateLimitTodoList() {
+//
+//        List<ToDoList> listToDoList = toDoListRepository.findAll();
+//
+//        var todoListFilter = listToDoList.stream().filter(list -> list.getIsExpired().equals(false)).toList();
+//
+//        for (ToDoList list : todoListFilter) {
+//            if (!LocalDate.now().isBefore(list.getLimitDate())) {
+//                list.setIsExpired(true);
+//                toDoListRepository.save(list);
+//            }
+//        }
+//    }
 
 
     //Auxiliary methods

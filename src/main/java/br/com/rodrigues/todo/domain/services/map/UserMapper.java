@@ -4,6 +4,7 @@ import br.com.rodrigues.todo.api.dto.user.UserRequestDTO;
 import br.com.rodrigues.todo.api.dto.user.UserResponseDTO;
 import br.com.rodrigues.todo.domain.entities.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -15,13 +16,15 @@ import java.util.List;
 public class UserMapper {
 
     private final ToDoMapper toDoMapper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public User toEntity(UserRequestDTO dto) {
         return new User(
                 dto.name(),
                 dto.lastName(),
                 dto.email(),
-                dto.dateOfBirth()
+                dto.dateOfBirth(),
+                passwordEncoder.encode(dto.password())
         );
     }
 
