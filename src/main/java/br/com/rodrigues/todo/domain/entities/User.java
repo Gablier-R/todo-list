@@ -36,10 +36,10 @@ public class User {
     private String email;
     private LocalDate dateOfBirth;
     private List<ToDoList> list = new ArrayList<>();
+    private List<Note> notes =  new ArrayList<>();
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
     private String password;
-    private Role role;
 
 
     public User(String name, String lastName, String email, LocalDate dateOfBirth, String password) {

@@ -10,8 +10,6 @@ public record StepsResponseDTO(
         Boolean done,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-
-        @JsonIgnore
         String toDoListId
 ) {
 }

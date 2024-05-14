@@ -22,10 +22,14 @@ public record UserRequestDTO(
         @Email
         String email,
 
-        //@NotBlank(message = "Date cannot be blank")
+        @NotBlank(message = "Date cannot be blank")
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         @Past(message = "Date must be in the past")
         LocalDate dateOfBirth,
+
+        @NotNull(message = "A senha não pode ser nula.")
+        @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{6,20}$",
+                message = "A senha deve ter entre 6 e 20 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.")
         String password
 ) {
 }

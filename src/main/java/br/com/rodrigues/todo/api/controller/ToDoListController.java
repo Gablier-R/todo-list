@@ -76,6 +76,4 @@ public class ToDoListController {
         toDoService.deleteToDoBy(token.getName(), todoId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
-
 }

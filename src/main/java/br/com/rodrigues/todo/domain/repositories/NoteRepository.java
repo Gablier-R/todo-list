@@ -1,0 +1,14 @@
+package br.com.rodrigues.todo.domain.repositories;
+
+import br.com.rodrigues.todo.domain.entities.Note;
+import br.com.rodrigues.todo.domain.entities.ToDoList;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface NoteRepository extends MongoRepository<Note, String> {
+
+    Page<Note> findAllNoteByUserId (String userId, Pageable pageable);
+}

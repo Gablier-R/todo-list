@@ -8,6 +8,7 @@ import br.com.rodrigues.todo.domain.entities.ToDoList;
 import br.com.rodrigues.todo.domain.repositories.StepRepository;
 import br.com.rodrigues.todo.domain.services.map.MapPage;
 import br.com.rodrigues.todo.domain.services.map.StepsMapper;
+import br.com.rodrigues.todo.infrastructure.exceptions.custom.BusinessException;
 import br.com.rodrigues.todo.infrastructure.exceptions.custom.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,6 @@ import java.util.List;
 @Service
 public class StepsService {
 
-    private final UserService userService;
     private final StepRepository stepRepository;
     private final ToDoListService toDoListService;
     private final StepsMapper stepsMapper;
@@ -31,9 +31,7 @@ public class StepsService {
 
     public List<StepsResponseDTO> saveStepBy(String userId, String todoId, List<StepsRequestDTO> dto) {
 
-        userService.validateUser(userId);
-
-        toDoListService.validateToDoList(todoId);
+        toDoListService.validateToDoList(todoId, userId);
 
         var entity = stepsMapper.toListEntity(todoId, dto);
 
@@ -46,9 +44,7 @@ public class StepsService {
 
     public PageableDTO listStepsBy(String userId, String todoId, Pageable pageable) {
 
-        userService.validateUser(userId);
-
-        toDoListService.validateToDoList(todoId);
+        toDoListService.validateToDoList(todoId, userId);
 
         Page<Step> page = stepRepository.findAllByToDoListId(todoId, pageable);
 
@@ -57,13 +53,11 @@ public class StepsService {
         return mapPage.mapToResponseAll(response, page);
     }
 
-    public StepsResponseDTO updateStepBy(String userId, String toDoListId, String stepId, StepsRequestDTO stepsResponseDTO) {
+    public StepsResponseDTO updateStepBy(String userId, String todoId, String stepId, StepsRequestDTO stepsResponseDTO) {
 
-        userService.validateUser(userId);
+        var todo = toDoListService.validateToDoList(todoId, userId);
 
-        var todo = toDoListService.validateToDoList(toDoListId);
-
-        var validatedStep = validatedStepBy(stepId);
+        var validatedStep = validatedStepBy(todoId, userId, stepId);
 
         var entityUpdated = stepsMapper.updateEntity(validatedStep, stepsResponseDTO);
 
@@ -87,32 +81,31 @@ public class StepsService {
         stepRepository.saveAll(stepResponse);
     }
 
-    public StepsResponseDTO findUniqueStepBy(String userId, String toDoListId, String stepId) {
+    public StepsResponseDTO findUniqueStepBy(String userId, String todoId, String stepId) {
 
-        userService.validateUser(userId);
-
-        toDoListService.validateToDoList(toDoListId);
-
-        var response = validatedStepBy(stepId);
+        var response = validatedStepBy(todoId, userId, stepId);
         return stepsMapper.toDto(response);
     }
 
     public void deleteStepsBy(String userId, String todoId, String stepId) {
 
-        userService.validateUser(userId);
-
-        toDoListService.validateToDoList(todoId);
-
-        validatedStepBy(stepId);
+        validatedStepBy(todoId, userId, stepId);
 
         stepRepository.deleteById(stepId);
     }
 
-    private Step validatedStepBy(String id) {
-        return stepRepository.findById(id).orElseThrow(() -> new NotFoundException("Step not found in the specified ToDo"));
+    private Step validatedStepBy(String userId, String todoId, String stepId) {
+
+        var todo = toDoListService.validateToDoList(todoId, userId);
+        var step = stepRepository.findById(stepId).orElseThrow(
+                () -> new NotFoundException("Step not found in the specified ToDo"));
+
+        if (todo.getId().equals(step.getToDoListId())){
+            throw new BusinessException("This step does not correspond to that specific list");
+        }
+
+        return step;
     }
-
-
 }
 
 //public StepsResponseDTO updateStep(String stepId, StepsRequestDTO stepsResponseDTO) {

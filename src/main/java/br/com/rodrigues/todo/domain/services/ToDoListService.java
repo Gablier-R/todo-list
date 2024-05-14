@@ -9,6 +9,7 @@ import br.com.rodrigues.todo.domain.repositories.StepRepository;
 import br.com.rodrigues.todo.domain.repositories.ToDoListRepository;
 import br.com.rodrigues.todo.domain.services.map.MapPage;
 import br.com.rodrigues.todo.domain.services.map.ToDoMapper;
+import br.com.rodrigues.todo.infrastructure.exceptions.custom.BusinessException;
 import br.com.rodrigues.todo.infrastructure.exceptions.custom.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -34,20 +35,17 @@ public class ToDoListService {
     public ToDoResponseDTO saveToDoBy(String userId, ToDoRequestDTO dto) {
 
         userService.validateUser(userId);
+
         var toDoList = todoMapper.toEntity(userId, dto);
 
-        var response = toDoListRepository.save(toDoList);
-
-        return todoMapper.toDto(response);
+        return todoMapper.toDto(toDoListRepository.save(toDoList));
     }
 
     public ToDoResponseDTO updateToDoBy(String userId, String todoId, ToDoRequestDTO dto) {
 
         userService.validateUser(userId);
 
-        ToDoList entity = validateToDoList(todoId);
-
-        ToDoList toDoListForSave = todoMapper.update(entity, dto);
+        ToDoList toDoListForSave = todoMapper.update(validateToDoList(todoId, userId), dto);
 
         var response = updateToDoIsDone(toDoListForSave.getSteps(), toDoListForSave);
 
@@ -59,10 +57,11 @@ public class ToDoListService {
     public ToDoResponseDTO detailsToDoBy(String userId, String todoId) {
         userService.validateUser(userId);
 
-        return todoMapper.toDto(validateToDoList(todoId));
+        return todoMapper.toDto(validateToDoList(todoId, userId));
     }
 
     public PageableDTO findAllToDoBy(String userId, Pageable pageable, String status) {
+        userService.validateUser(userId);
         Page<ToDoList> page = toDoListRepository.findAllToDoListByUserId(userId, pageable);
 
         List<ToDoResponseDTO> response;
@@ -75,6 +74,7 @@ public class ToDoListService {
     }
 
     public PageableDTO findAllToDoFilterCustomBy(String userId, String priority, Pageable pageable) {
+        userService.validateUser(userId);
         Page<ToDoList> page = toDoListRepository.findAllByUserIdAndPriority(userId, priority, pageable);
         List<ToDoList> filtered = page.getContent();
         var response = todoMapper.toListDto(filtered);
@@ -84,7 +84,7 @@ public class ToDoListService {
     public void deleteToDoBy(String userId, String todoId) {
         userService.validateUser(userId);
 
-        validateToDoList(todoId);
+        validateToDoList(todoId,userId);
 
         List<Step> stepList = stepRepository.findAllByToDoListId(todoId);
         stepRepository.deleteAll(stepList);
@@ -110,8 +110,16 @@ public class ToDoListService {
 
 
     //Auxiliary methods
-    public ToDoList validateToDoList(String todoId) {
-        return toDoListRepository.findById(todoId).orElseThrow(() -> new NotFoundException("List does not exists in user"));
+    public ToDoList validateToDoList(String todoId, String userId) {
+        var user = userService.validateUser(userId);
+        var todoList = toDoListRepository.findById(todoId).orElseThrow(
+                () -> new NotFoundException("List does not exists in user"));
+
+        if (!user.getId().equals(todoList.getUserId())){
+            throw new BusinessException("This list does not correspond to that specific user");
+        }
+
+        return todoList;
     }
 
     private ToDoList updateToDoIsDone(List<Step> step, ToDoList todo) {
@@ -131,6 +139,4 @@ public class ToDoListService {
 
         return todo;
     }
-
-
 }

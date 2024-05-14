@@ -46,9 +46,7 @@ public class UserService {
 
     public UserResponseDTO updateUser(String userId, UserRequestDTO dto) {
 
-        var entity = validateUser(userId);
-
-        var userResponse = userMapper.updateUser(entity, dto);
+        var userResponse = userMapper.updateUser(validateUser(userId), dto);
 
         userRepository.save(userResponse);
 
@@ -64,7 +62,6 @@ public class UserService {
         var entity = validateUser(userId);
 
         List<ToDoList> toDoLists = toDoListRepository.findAllToDoListByUserId(userId);
-
 
         for (ToDoList toDoList : toDoLists) {
             List<Step> stepList = stepRepository.findAllByToDoListId(toDoList.getId());

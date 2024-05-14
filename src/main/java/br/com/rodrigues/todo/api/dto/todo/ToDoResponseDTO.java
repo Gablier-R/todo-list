@@ -18,8 +18,6 @@ public record ToDoResponseDTO(
         List<StepsResponseDTO> steps,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-
-        @JsonIgnore
         String userId
 ) {
 }

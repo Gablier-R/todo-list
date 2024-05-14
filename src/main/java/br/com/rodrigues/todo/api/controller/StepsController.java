@@ -41,11 +41,6 @@ public class StepsController {
         return ResponseEntity.created(location).body(saveStep);
     }
 
-//    @PostMapping("/{userId}/{todoId}")
-//    ResponseEntity<List<StepsResponseDTO>> saveSteps(@PathVariable String userId, @PathVariable String todoId, @RequestBody List<StepsRequestDTO> dto) {
-//        return new ResponseEntity<>(stepsService.saveStepBy(userId, todoId, dto), HttpStatus.CREATED);
-//    }
-//
     @GetMapping("/{todoId}")
     ResponseEntity<PageableDTO> listStepsByTodoId(JwtAuthenticationToken token, @PathVariable String todoId,
                                                   @RequestParam(defaultValue = DEFAULT_PAGE_NUMBER, required = false) int pageNo,
