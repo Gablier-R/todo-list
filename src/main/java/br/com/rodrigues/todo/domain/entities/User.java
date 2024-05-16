@@ -13,10 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 
 @Setter
@@ -34,15 +31,16 @@ public class User {
 
     @Indexed(unique = true)
     private String email;
-    private LocalDate dateOfBirth;
+    private Date dateOfBirth;
     private List<ToDoList> list = new ArrayList<>();
     private List<Note> notes =  new ArrayList<>();
+    private List<Category> categories = new ArrayList<>();
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
     private String password;
 
 
-    public User(String name, String lastName, String email, LocalDate dateOfBirth, String password) {
+    public User(String name, String lastName, String email, Date dateOfBirth, String password) {
         this.name = name;
         this.lastName = lastName;
         this.email = email;

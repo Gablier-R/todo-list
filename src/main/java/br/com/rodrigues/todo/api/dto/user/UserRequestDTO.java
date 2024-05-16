@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public record UserRequestDTO(
 
@@ -25,7 +26,7 @@ public record UserRequestDTO(
         @NotBlank(message = "Date cannot be blank")
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         @Past(message = "Date must be in the past")
-        LocalDate dateOfBirth,
+        Date dateOfBirth,
 
         @NotNull(message = "A senha não pode ser nula.")
         @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{6,20}$",

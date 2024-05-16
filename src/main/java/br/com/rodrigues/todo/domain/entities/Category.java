@@ -1,11 +1,9 @@
 package br.com.rodrigues.todo.domain.entities;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -16,19 +14,17 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 
-@Document(collection = "note")
-public class Note {
+@Document(collection = "category")
+public class Category {
 
-    @Id
     private String id = UUID.randomUUID().toString();
-    private String content;
-    private String category;
+    private String name;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
     private String userId;
 
-    public Note(String content, String userId) {
-        this.content = content;
+    public Category(String name, String userId) {
+        this.name = name;
         this.userId = userId;
     }
 }

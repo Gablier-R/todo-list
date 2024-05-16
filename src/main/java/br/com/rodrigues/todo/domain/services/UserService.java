@@ -3,12 +3,8 @@ package br.com.rodrigues.todo.domain.services;
 import br.com.rodrigues.todo.api.dto.user.UserRequestDTO;
 import br.com.rodrigues.todo.api.dto.user.UserResponseDTO;
 import br.com.rodrigues.todo.api.dto.utils.PageableDTO;
-import br.com.rodrigues.todo.domain.entities.Step;
-import br.com.rodrigues.todo.domain.entities.ToDoList;
-import br.com.rodrigues.todo.domain.entities.User;
-import br.com.rodrigues.todo.domain.repositories.StepRepository;
-import br.com.rodrigues.todo.domain.repositories.ToDoListRepository;
-import br.com.rodrigues.todo.domain.repositories.UserRepository;
+import br.com.rodrigues.todo.domain.entities.*;
+import br.com.rodrigues.todo.domain.repositories.*;
 import br.com.rodrigues.todo.domain.services.map.MapPage;
 import br.com.rodrigues.todo.domain.services.map.UserMapper;
 import br.com.rodrigues.todo.infrastructure.exceptions.custom.BusinessException;
@@ -31,6 +27,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final ToDoListRepository toDoListRepository;
     private final StepRepository stepRepository;
+    private final NoteRepository noteRepository;
+    private final CategoryRepository categoryRepository;
 
     private final UserMapper userMapper;
 
@@ -67,8 +65,19 @@ public class UserService {
             List<Step> stepList = stepRepository.findAllByToDoListId(toDoList.getId());
             stepRepository.deleteAll(stepList);
         }
-
         toDoListRepository.deleteAll(toDoLists);
+
+
+        List<Note> noteList = noteRepository.findAllNoteByUserId(userId);
+        for (Note notes : noteList) {
+            noteRepository.delete(notes);
+        }
+
+        List<Category> categoryList = categoryRepository.findAllCategoryByUserId(userId);
+        for (Category categories : categoryList) {
+            categoryRepository.delete(categories);
+        }
+
         userRepository.delete(entity);
     }
 
