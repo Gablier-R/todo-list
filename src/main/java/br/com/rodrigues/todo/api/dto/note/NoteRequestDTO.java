@@ -9,6 +9,8 @@ public record NoteRequestDTO(
         @NotBlank
         @NotNull
         @Size(min = 1, message = "Minimum size of 1")
-        String content
+        String content,
+
+        String category
 ) {
 }

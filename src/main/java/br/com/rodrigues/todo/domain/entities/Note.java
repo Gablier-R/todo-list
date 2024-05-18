@@ -27,8 +27,9 @@ public class Note {
     private LocalDateTime updatedAt;
     private String userId;
 
-    public Note(String content, String userId) {
+    public Note(String content, String category, String userId) {
         this.content = content;
+        this.category = category;
         this.userId = userId;
     }
 }

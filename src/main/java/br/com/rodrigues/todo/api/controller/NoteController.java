@@ -4,6 +4,7 @@ import br.com.rodrigues.todo.api.dto.note.NoteRequestDTO;
 import br.com.rodrigues.todo.api.dto.note.NoteResponseDTO;
 import br.com.rodrigues.todo.api.dto.utils.PageableDTO;
 import br.com.rodrigues.todo.domain.services.NoteService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,7 @@ import static br.com.rodrigues.todo.utils.Constants.*;
 
 @RestController
 @RequestMapping("/note")
+@Tag(name = "note")
 public class NoteController {
 
     private final NoteService noteService;

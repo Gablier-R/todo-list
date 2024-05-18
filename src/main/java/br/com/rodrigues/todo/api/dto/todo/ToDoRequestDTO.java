@@ -11,11 +11,14 @@ public record ToDoRequestDTO(
 
         @Size(min = 3, message = "Minimum size of 3")
         String name,
+
         Priority priority,
 
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         @Future(message = "Date must be in the future")
         LocalDate limitDate,
-        Boolean done
+
+        Boolean done,
+        String category
 ) {
 }

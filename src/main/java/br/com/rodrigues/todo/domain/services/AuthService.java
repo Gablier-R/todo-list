@@ -20,7 +20,7 @@ import java.time.Instant;
 @Service
 public class AuthService {
 
-    private static final Long EXPIRESIN = 300L;
+    private static final Long EXPIRESIN = 30000000L;
 
     private final JwtEncoder jwtEncoder;
     private final UserRepository userRepository;

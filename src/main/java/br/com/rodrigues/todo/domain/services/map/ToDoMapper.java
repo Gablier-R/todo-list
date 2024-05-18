@@ -3,6 +3,7 @@ package br.com.rodrigues.todo.domain.services.map;
 import br.com.rodrigues.todo.api.dto.todo.ToDoRequestDTO;
 import br.com.rodrigues.todo.api.dto.todo.ToDoResponseDTO;
 import br.com.rodrigues.todo.domain.entities.ToDoList;
+import br.com.rodrigues.todo.domain.repositories.StepRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,17 +15,18 @@ import java.util.List;
 @Component
 public class ToDoMapper {
 
-    private final StepsMapper stepsMapper;
+    private final StepRepository stepRepository;
 
     public ToDoResponseDTO toDto(ToDoList entity) {
         return new ToDoResponseDTO(
                 entity.getId(),
                 entity.getName(),
+                entity.getCategory(),
                 entity.getPriority(),
                 entity.getIsDone(),
                 entity.getLimitDate(),
                 entity.getIsExpired(),
-                stepsMapper.toListDto(entity.getSteps()),
+                stepRepository.countByToDoListId(entity.getId()),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),
                 entity.getUserId()
@@ -36,8 +38,8 @@ public class ToDoMapper {
                 dto.name(),
                 dto.priority(),
                 dto.limitDate(),
+                dto.category(),
                 userId
-
         );
     }
 

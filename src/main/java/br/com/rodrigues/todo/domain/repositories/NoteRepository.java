@@ -14,4 +14,5 @@ public interface NoteRepository extends MongoRepository<Note, String> {
 
     Page<Note> findAllNoteByUserId (String userId, Pageable pageable);
     List<Note> findAllNoteByUserId (String userId);
+    Integer countByUserId(String userId);
 }

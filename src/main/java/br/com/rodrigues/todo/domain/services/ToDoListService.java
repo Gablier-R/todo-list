@@ -27,14 +27,17 @@ public class ToDoListService {
     private final ToDoListRepository toDoListRepository;
     private final StepRepository stepRepository;
 
-    private final ToDoMapper todoMapper;
     private final UserService userService;
-    private final MapPage mapPage;
+    private final CategoryService categoryService;
 
+    private final MapPage mapPage;
+    private final ToDoMapper todoMapper;
 
     public ToDoResponseDTO saveToDoBy(String userId, ToDoRequestDTO dto) {
 
         userService.validateUser(userId);
+
+        categoryService.findByName(dto.category(), userId);
 
         var toDoList = todoMapper.toEntity(userId, dto);
 

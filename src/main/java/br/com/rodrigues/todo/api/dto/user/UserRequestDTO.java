@@ -3,7 +3,6 @@ package br.com.rodrigues.todo.api.dto.user;
 import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 public record UserRequestDTO(

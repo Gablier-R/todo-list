@@ -1,11 +1,7 @@
 package br.com.rodrigues.todo.api.dto.user;
 
-import br.com.rodrigues.todo.api.dto.todo.ToDoResponseDTO;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
 
 public record UserResponseDTO(
 
@@ -14,7 +10,9 @@ public record UserResponseDTO(
         String lastName,
         String email,
         Date dateOfBirth,
-        List<ToDoResponseDTO> lists,
+        Integer lists,
+        Integer notes,
+        Integer categories,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {

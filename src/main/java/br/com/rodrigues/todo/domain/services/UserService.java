@@ -67,14 +67,11 @@ public class UserService {
         }
         toDoListRepository.deleteAll(toDoLists);
 
-
-        List<Note> noteList = noteRepository.findAllNoteByUserId(userId);
-        for (Note notes : noteList) {
+        for (Note notes : noteRepository.findAllNoteByUserId(userId)) {
             noteRepository.delete(notes);
         }
 
-        List<Category> categoryList = categoryRepository.findAllCategoryByUserId(userId);
-        for (Category categories : categoryList) {
+        for (Category categories : categoryRepository.findAllCategoryByUserId(userId)) {
             categoryRepository.delete(categories);
         }
 

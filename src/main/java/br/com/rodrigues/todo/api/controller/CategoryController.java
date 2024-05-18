@@ -5,6 +5,7 @@ import br.com.rodrigues.todo.api.dto.category.CategoryRequestDTO;
 import br.com.rodrigues.todo.api.dto.category.CategoryResponseDTO;
 import br.com.rodrigues.todo.api.dto.utils.PageableDTO;
 import br.com.rodrigues.todo.domain.services.CategoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,7 @@ import static br.com.rodrigues.todo.utils.Constants.*;
 
 @RestController
 @RequestMapping("/category")
+@Tag(name = "note")
 public class CategoryController {
 
     private final CategoryService categoryService;

@@ -6,6 +6,7 @@ public record NoteResponseDTO(
 
         String id,
         String content,
+        String category,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         String userId

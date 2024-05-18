@@ -33,13 +33,9 @@ public class StepsService {
 
         toDoListService.validateToDoList(todoId, userId);
 
-        var entity = stepsMapper.toListEntity(todoId, dto);
+        List<Step> stepList = new ArrayList<>(stepsMapper.toListEntity(todoId, dto));
 
-        List<Step> stepList = new ArrayList<>(entity);
-
-        var response = stepRepository.saveAll(stepList);
-
-        return stepsMapper.toListDto(response);
+        return stepsMapper.toListDto(stepRepository.saveAll(stepList));
     }
 
     public PageableDTO listStepsBy(String userId, String todoId, Pageable pageable) {
@@ -83,8 +79,7 @@ public class StepsService {
 
     public StepsResponseDTO findUniqueStepBy(String userId, String todoId, String stepId) {
 
-        var response = validatedStepBy(todoId, userId, stepId);
-        return stepsMapper.toDto(response);
+        return stepsMapper.toDto(validatedStepBy(todoId, userId, stepId));
     }
 
     public void deleteStepsBy(String userId, String todoId, String stepId) {

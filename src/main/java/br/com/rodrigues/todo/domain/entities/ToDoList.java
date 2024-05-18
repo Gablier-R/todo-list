@@ -24,6 +24,7 @@ public class ToDoList {
     @Id
     private String id = UUID.randomUUID().toString();
     private String name;
+    private String category;
     private Priority priority;
     private Boolean isDone = false;
     private LocalDate limitDate;
@@ -33,10 +34,11 @@ public class ToDoList {
     private LocalDateTime updatedAt;
     private String userId;
 
-    public ToDoList(String name, Priority priority, LocalDate limitDate, String userId) {
+    public ToDoList(String name, Priority priority, LocalDate limitDate, String category, String userId) {
         this.name = name;
         this.priority = (priority == null) ? Priority.MEDIUM : priority;
         this.limitDate = limitDate;
+        this.category = category;
         this.userId = userId;
     }
 }

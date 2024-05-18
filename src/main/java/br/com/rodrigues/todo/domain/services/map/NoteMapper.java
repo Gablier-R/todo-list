@@ -15,6 +15,7 @@ public class NoteMapper {
     public Note toEntity(String userId, NoteRequestDTO dto) {
         return new Note(
                 dto.content(),
+                dto.category(),
                 userId
         );
     }
@@ -23,6 +24,7 @@ public class NoteMapper {
         return new NoteResponseDTO(
                 entity.getId(),
                 entity.getContent(),
+                entity.getCategory(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),
                 entity.getUserId()

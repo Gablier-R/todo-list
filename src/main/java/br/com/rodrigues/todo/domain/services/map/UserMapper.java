@@ -3,6 +3,9 @@ package br.com.rodrigues.todo.domain.services.map;
 import br.com.rodrigues.todo.api.dto.user.UserRequestDTO;
 import br.com.rodrigues.todo.api.dto.user.UserResponseDTO;
 import br.com.rodrigues.todo.domain.entities.User;
+import br.com.rodrigues.todo.domain.repositories.CategoryRepository;
+import br.com.rodrigues.todo.domain.repositories.NoteRepository;
+import br.com.rodrigues.todo.domain.repositories.ToDoListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -15,8 +18,11 @@ import java.util.List;
 @Component
 public class UserMapper {
 
-    private final ToDoMapper toDoMapper;
     private final BCryptPasswordEncoder passwordEncoder;
+
+    private final ToDoListRepository toDoListRepository;
+    private final NoteRepository noteRepository;
+    private final CategoryRepository categoryRepository;
 
     public User toEntity(UserRequestDTO dto) {
         return new User(
@@ -35,7 +41,9 @@ public class UserMapper {
                 entity.getLastName(),
                 entity.getEmail(),
                 entity.getDateOfBirth(),
-                toDoMapper.toListDto(entity.getList()),
+                toDoListRepository.countByUserId(entity.getId()),
+                noteRepository.countByUserId(entity.getId()),
+                categoryRepository.countByUserId(entity.getId()),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

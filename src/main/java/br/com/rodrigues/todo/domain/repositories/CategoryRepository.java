@@ -14,4 +14,6 @@ import java.util.List;
 public interface CategoryRepository extends MongoRepository<Category, String> {
     Page<Category> findAllCategoryByUserId (String userId, Pageable pageable);
     List<Category> findAllCategoryByUserId (String userId);
+    Integer countByUserId(String userId);
+    Category findByName (String name);
 }

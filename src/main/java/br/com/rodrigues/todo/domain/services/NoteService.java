@@ -27,7 +27,7 @@ public class NoteService {
     private final UserService userService;
 
     public NoteResponseDTO createNoteBy (String userId, NoteRequestDTO dto){
-        var user = userService.validateUser(userId);
+        userService.validateUser(userId);
         return noteMapper.toDto(noteRepository.save(noteMapper.toEntity(userId, dto)));
     }
 
@@ -51,7 +51,6 @@ public class NoteService {
     }
 
     public void deleteNoteBy (String userId, String noteId){
-
         validateNote(noteId, userId);
         noteRepository.deleteById(noteId);
     }

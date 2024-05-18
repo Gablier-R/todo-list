@@ -18,4 +18,6 @@ public interface ToDoListRepository extends MongoRepository<ToDoList, String> {
 
     Page<ToDoList> findAllByUserIdAndPriority(String userId, String priority, Pageable pageable);
 
+    Integer countByUserId(String userId);
+
 }

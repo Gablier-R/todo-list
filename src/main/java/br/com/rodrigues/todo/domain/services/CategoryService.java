@@ -30,7 +30,7 @@ public class CategoryService {
     }
 
     public CategoryResponseDTO detailsCategoryBy (String userId, String categoryId){
-        return categoryMapper.toDto(validateNote(categoryId, userId));
+        return categoryMapper.toDto(validateCategory(categoryId, userId));
     }
 
     public PageableDTO listAllCategoriesBy(String userId, Pageable pageable) {
@@ -44,18 +44,18 @@ public class CategoryService {
     }
 
     public CategoryResponseDTO updateCategoryBy(String userId, String categoryId, CategoryRequestDTO dto){
-        var response = categoryMapper.updateEntity(validateNote(categoryId, userId), dto);
+        var response = categoryMapper.updateEntity(validateCategory(categoryId, userId), dto);
         categoryRepository.save(response);
         return categoryMapper.toDto(response);
     }
 
     public void deleteCategoryBy (String userId, String categoryId){
-        categoryMapper.toDto(validateNote(categoryId, userId));
+        categoryMapper.toDto(validateCategory(categoryId, userId));
 
         categoryRepository.deleteById(categoryId);
     }
 
-    public Category validateNote(String categoryId, String userId) {
+    public Category validateCategory(String categoryId, String userId) {
 
         var user = userService.validateUser(userId);
         var category = categoryRepository.findById(categoryId).orElseThrow(
@@ -67,4 +67,23 @@ public class CategoryService {
 
         return category;
     }
+
+    public Void findByName(String name, String userId){
+
+        if (!name.isEmpty()){
+
+            var user = userService.validateUser(userId);
+
+            var category = categoryRepository.findByName(name);
+            if (category == null){
+                throw new NotFoundException("Category does not exists in user");
+            }
+
+            if (!user.getId().equals(category.getUserId())){
+                throw new BusinessException("This category does not correspond to that specific user");
+            }
+        }
+        return null;
+    }
+
 }
