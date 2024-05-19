@@ -4,6 +4,7 @@ import br.com.rodrigues.todo.api.dto.note.NoteRequestDTO;
 import br.com.rodrigues.todo.api.dto.note.NoteResponseDTO;
 import br.com.rodrigues.todo.api.dto.utils.PageableDTO;
 import br.com.rodrigues.todo.domain.services.NoteService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,9 @@ public class NoteController {
 
     private final NoteService noteService;
 
+    @Operation(summary = "Create new Note", method ="POST")
     @PostMapping
-    ResponseEntity<NoteResponseDTO> saveNote(JwtAuthenticationToken token, @RequestBody @Valid NoteRequestDTO note) {
+    ResponseEntity<NoteResponseDTO> save(JwtAuthenticationToken token, @RequestBody @Valid NoteRequestDTO note) {
         var savedNote = noteService.createNoteBy(token.getName(), note);
 
         URI location = ServletUriComponentsBuilder
@@ -41,8 +43,9 @@ public class NoteController {
         return ResponseEntity.created(location).body(savedNote);
     }
 
+    @Operation(summary = "List all Notes", method ="GET")
     @GetMapping
-    ResponseEntity<PageableDTO> listAllNotesByUserId(JwtAuthenticationToken token,
+    ResponseEntity<PageableDTO> allByUser(JwtAuthenticationToken token,
                                                   @RequestParam(defaultValue = DEFAULT_PAGE_NUMBER, required = false) int pageNo,
                                                   @RequestParam(defaultValue = DEFAULT_PAGE_SIZE, required = false) int pageSize,
                                                   @RequestParam(defaultValue = DEFAULT_SORT, required = false) String sortBy) {
@@ -50,18 +53,21 @@ public class NoteController {
         return new ResponseEntity<>(noteService.listAllNotesBy(token.getName(), pageable), HttpStatus.OK);
     }
 
+    @Operation(summary = "Details Note", method ="GET")
     @GetMapping("/{noteId}")
-    ResponseEntity<NoteResponseDTO> detailsNote(JwtAuthenticationToken token, @PathVariable String noteId) {
+    ResponseEntity<NoteResponseDTO> details(JwtAuthenticationToken token, @PathVariable String noteId) {
         return new ResponseEntity<>(noteService.detailsNoteBy(token.getName(), noteId), HttpStatus.OK);
     }
 
+    @Operation(summary = "Update Note", method ="PUT")
     @PutMapping("/{noteId}")
-    ResponseEntity<NoteResponseDTO> updateNote(JwtAuthenticationToken token, @PathVariable String noteId, @RequestBody NoteRequestDTO dto) {
+    ResponseEntity<NoteResponseDTO> update(JwtAuthenticationToken token, @PathVariable String noteId, @RequestBody NoteRequestDTO dto) {
         return new ResponseEntity<>(noteService.updateNoteBy(token.getName(), noteId, dto), HttpStatus.OK);
     }
 
+    @Operation(summary = "Delete Note", method ="DELETE")
     @DeleteMapping("/{noteId}")
-    ResponseEntity<Void> deleteNote(JwtAuthenticationToken token, @PathVariable String noteId) {
+    ResponseEntity<Void> delete(JwtAuthenticationToken token, @PathVariable String noteId) {
         noteService.deleteNoteBy(token.getName(), noteId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

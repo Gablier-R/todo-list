@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,14 +28,14 @@ public class ToDoList {
     private String category;
     private Priority priority;
     private Boolean isDone = false;
-    private LocalDate limitDate;
+    private Date limitDate;
     private Boolean isExpired = false;
     private List<Step> steps = new ArrayList<>();
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
     private String userId;
 
-    public ToDoList(String name, Priority priority, LocalDate limitDate, String category, String userId) {
+    public ToDoList(String name, Priority priority, Date limitDate, String category, String userId) {
         this.name = name;
         this.priority = (priority == null) ? Priority.MEDIUM : priority;
         this.limitDate = limitDate;

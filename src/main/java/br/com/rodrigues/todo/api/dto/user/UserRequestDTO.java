@@ -22,7 +22,7 @@ public record UserRequestDTO(
         @Email
         String email,
 
-        @NotBlank(message = "Date cannot be blank")
+        @NotNull(message = "Date cannot be blank")
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         @Past(message = "Date must be in the past")
         Date dateOfBirth,

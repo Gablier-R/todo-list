@@ -2,18 +2,12 @@ package br.com.rodrigues.todo.domain.services;
 
 import br.com.rodrigues.todo.api.dto.user.UserRequestDTO;
 import br.com.rodrigues.todo.api.dto.user.UserResponseDTO;
-import br.com.rodrigues.todo.api.dto.utils.PageableDTO;
 import br.com.rodrigues.todo.domain.entities.*;
 import br.com.rodrigues.todo.domain.repositories.*;
-import br.com.rodrigues.todo.domain.services.map.MapPage;
 import br.com.rodrigues.todo.domain.services.map.UserMapper;
 import br.com.rodrigues.todo.infrastructure.exceptions.custom.BusinessException;
 import br.com.rodrigues.todo.infrastructure.exceptions.custom.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

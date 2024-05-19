@@ -6,7 +6,6 @@ import br.com.rodrigues.todo.domain.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,18 +20,19 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/user")
-@Tag(name = "user")
 public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "Salvar usuario", method ="POST")
+    @Operation(summary = "Creates new User", method ="POST")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Usuario savo com sucesso"),
-            @ApiResponse(responseCode = "500", description = "Erro ao salvar usuario"),
+            @ApiResponse(responseCode = "201", description = "Successfully"),
+            @ApiResponse(responseCode = "400", description = "Non-standard password or existing user"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "500", description = "Error saving user"),
     })
     @PostMapping
-    ResponseEntity<UserResponseDTO> saveUser(@RequestBody @Valid UserRequestDTO dto) {
+    ResponseEntity<UserResponseDTO> save(@RequestBody @Valid UserRequestDTO dto) {
         var savedUser = userService.saveUser(dto);
 
         URI location = ServletUriComponentsBuilder
@@ -43,34 +43,21 @@ public class UserController {
         return ResponseEntity.created(location).body(savedUser);
     }
 
-
-    @Operation(summary = "Listar usario", method ="GET")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Erro ao buscar usuario"),
-    })
+    @Operation(summary = "List User", method ="GET")
     @GetMapping
-    ResponseEntity<UserResponseDTO> listUserById(JwtAuthenticationToken token) {
+    ResponseEntity<UserResponseDTO> details(JwtAuthenticationToken token) {
         return new ResponseEntity<>(userService.listById(token.getName()), HttpStatus.FOUND);
     }
 
-    @Operation(summary = "Atualizar usuario", method ="PUT")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "202", description = "Busca realizada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Erro ao atualizar usuario"),
-    })
+    @Operation(summary = "Update User", method ="PUT")
     @PutMapping
-    ResponseEntity<UserResponseDTO> updateUser(JwtAuthenticationToken token, @RequestBody UserRequestDTO dto) {
+    ResponseEntity<UserResponseDTO> update(JwtAuthenticationToken token, @RequestBody UserRequestDTO dto) {
         return new ResponseEntity<>(userService.updateUser(token.getName(), dto), HttpStatus.ACCEPTED);
     }
 
-    @Operation(summary = "Deletar usuario", method ="DELETE")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Busca realizada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Erro ao deletar usuario"),
-    })
+    @Operation(summary = "Delete User", method ="DELETE")
     @DeleteMapping
-    ResponseEntity<Void> deleteById(JwtAuthenticationToken token) {
+    ResponseEntity<Void> delete(JwtAuthenticationToken token) {
         userService.deleteUser(token.getName());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public record ToDoRequestDTO(
 
@@ -16,7 +17,7 @@ public record ToDoRequestDTO(
 
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         @Future(message = "Date must be in the future")
-        LocalDate limitDate,
+        Date limitDate,
 
         Boolean done,
         String category

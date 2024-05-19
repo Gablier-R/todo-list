@@ -4,6 +4,7 @@ import br.com.rodrigues.todo.domain.entities.Priority;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public record ToDoResponseDTO(
         String id,
@@ -11,7 +12,7 @@ public record ToDoResponseDTO(
         String category,
         Priority priority,
         Boolean done,
-        LocalDate limitDate,
+        Date limitDate,
         Boolean isExpired,
         Integer steps,
         LocalDateTime createdAt,

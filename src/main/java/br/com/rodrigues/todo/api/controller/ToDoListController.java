@@ -4,6 +4,7 @@ import br.com.rodrigues.todo.api.dto.todo.ToDoRequestDTO;
 import br.com.rodrigues.todo.api.dto.todo.ToDoResponseDTO;
 import br.com.rodrigues.todo.api.dto.utils.PageableDTO;
 import br.com.rodrigues.todo.domain.services.ToDoListService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class ToDoListController {
 
     private final ToDoListService toDoService;
 
+    @Operation(summary = "Create new To do List", method ="POST")
     @PostMapping
     ResponseEntity<ToDoResponseDTO> saveToDo(JwtAuthenticationToken token, @RequestBody @Valid ToDoRequestDTO todo) {
         var savedToDo = toDoService.saveToDoBy(token.getName(), todo);
@@ -41,6 +43,7 @@ public class ToDoListController {
         return ResponseEntity.created(location).body(savedToDo);
     }
 
+    @Operation(summary = "List all To do lists", method ="GET")
     @GetMapping
     ResponseEntity<PageableDTO> listAllToDoByUser(JwtAuthenticationToken token,
                                                   @RequestParam(defaultValue = DEFAULT_STATUS, required = false) boolean status,
@@ -51,6 +54,7 @@ public class ToDoListController {
         return new ResponseEntity<>(toDoService.findAllToDoBy(token.getName(), pageable, String.valueOf(status)), HttpStatus.OK);
     }
 
+    @Operation(summary = "List all To do lists filtered priority", method ="GET")
     @GetMapping("/filter")
     ResponseEntity<PageableDTO> listAllToDoByUserPriority(JwtAuthenticationToken token,
                                                           @RequestParam(defaultValue = DEFAULT_PAGE_NUMBER, required = false) int pageNo,
@@ -61,16 +65,19 @@ public class ToDoListController {
     }
 
 
+    @Operation(summary = "Details To do list", method ="GET")
     @GetMapping("/{todoId}")
     ResponseEntity<ToDoResponseDTO> detailsToDo(JwtAuthenticationToken token, @PathVariable String todoId) {
         return new ResponseEntity<>(toDoService.detailsToDoBy(token.getName(), todoId), HttpStatus.OK);
     }
 
+    @Operation(summary = "Update To do list", method ="PUT")
     @PutMapping("/{todoId}")
     ResponseEntity<ToDoResponseDTO> updateToDo(JwtAuthenticationToken token, @PathVariable String todoId, @RequestBody ToDoRequestDTO dto) {
         return new ResponseEntity<>(toDoService.updateToDoBy(token.getName(), todoId, dto), HttpStatus.OK);
     }
 
+    @Operation(summary = "Delete To do list", method ="DELETE")
     @DeleteMapping("/{todoId}")
     ResponseEntity<Void> deleteTodo(JwtAuthenticationToken token, @PathVariable String todoId) {
         toDoService.deleteToDoBy(token.getName(), todoId);
