@@ -24,6 +24,7 @@ https://todo-list-nch4.onrender.com/swagger-ui/index.html
 - Java 17 or higher
 - MongoDB (can run in a Docker container)
 - Docker (optional, to package and distribute the application in containers)
+- GitHub actions
 ## Run Locally
 
 Clone the project
