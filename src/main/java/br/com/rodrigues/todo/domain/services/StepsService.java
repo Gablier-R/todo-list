@@ -53,7 +53,7 @@ public class StepsService {
 
         var todo = toDoListService.validateToDoList(todoId, userId);
 
-        var validatedStep = validatedStepBy(todoId, userId, stepId);
+        var validatedStep = validatedStepBy(userId,todoId, stepId);
 
         var entityUpdated = stepsMapper.updateEntity(validatedStep, stepsResponseDTO);
 
@@ -79,12 +79,12 @@ public class StepsService {
 
     public StepsResponseDTO findUniqueStepBy(String userId, String todoId, String stepId) {
 
-        return stepsMapper.toDto(validatedStepBy(todoId, userId, stepId));
+        return stepsMapper.toDto(validatedStepBy(userId, todoId, stepId));
     }
 
     public void deleteStepsBy(String userId, String todoId, String stepId) {
 
-        validatedStepBy(todoId, userId, stepId);
+        validatedStepBy(userId,todoId, stepId);
 
         stepRepository.deleteById(stepId);
     }
@@ -102,34 +102,3 @@ public class StepsService {
         return step;
     }
 }
-
-//public StepsResponseDTO updateStep(String stepId, StepsRequestDTO stepsResponseDTO) {
-//
-//        var response = validatedStep(stepId);
-//
-//
-//        for (Step step : todo.getSteps()) {
-//            if (step.getId().equals(stepId)) {
-//                Step stepUpdated = stepsMapper.updateEntity(step, stepsResponseDTO);
-//
-//                // Verifica se todos os passos estão concluídos
-//                boolean allStepsDone = todo.getSteps().stream().allMatch(Step::getIsDone);
-//                if (allStepsDone) {
-//                    todo.setIsDone(true);
-//                }
-//
-//                // Atualiza a lista de tarefas do usuário com a ToDoList atualizada
-//                user.getList().stream()
-//                        .filter(list -> list.getId().equals(todoId))
-//                        .findFirst()
-//                        .ifPresent(list -> list.setIsDone(todo.getIsDone()));
-//
-//                // Salva as alterações no usuário
-//                userService.save(user);
-//
-//                // Retorna o passo atualizado
-//                return stepsMapper.toDto(stepUpdated);
-//            }
-//        }
-//        throw new NotFoundException("Step not found in the specified ToDo");
-//    }
