@@ -68,7 +68,7 @@ public class CategoryService {
         return category;
     }
 
-    public Void findByName(String name, String userId){
+    public void findByName(String name, String userId){
 
         if (!name.isEmpty()){
 
@@ -83,7 +83,6 @@ public class CategoryService {
                 throw new BusinessException("This category does not correspond to that specific user");
             }
         }
-        return null;
     }
 
 }

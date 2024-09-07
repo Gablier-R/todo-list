@@ -8,6 +8,7 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -17,12 +18,16 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponseDTO> badCredentialsException(BadCredentialsException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDTO(exception.getMessage()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<ValidateErrorResponseDTO>> methodArgumentNotValidException(MethodArgumentNotValidException exception) {
 
         var errors = exception.getFieldErrors();
-
-        return ResponseEntity.badRequest().body(errors.stream().map(ValidateErrorResponseDTO::new).toList());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.stream().map(ValidateErrorResponseDTO::new).toList());
     }
 
     @ExceptionHandler(NotFoundException.class)
