@@ -20,11 +20,11 @@ https://todo-list-nch4.onrender.com/swagger-ui/index.html
 - Spring Security(With jwt): Security framework for authentication and access control.
 - Swagger: Tool for documentation and testing APIs.
 - Docker: Platform for developing, shipping and running applications in containers.
+- GitHub actions
 ## Prerequisites
 - Java 17 or higher
 - MongoDB (can run in a Docker container)
 - Docker (optional, to package and distribute the application in containers)
-- GitHub actions
 ## Run Locally
 
 Clone the project
